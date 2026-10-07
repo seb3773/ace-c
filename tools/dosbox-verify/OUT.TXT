@@ -1,0 +1,37 @@
+
+
+------------- 09/07/26 03:20:17   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std STORE.ACE -outOUT.TXT
+
+Warning: This is not a fully ACE compatible archive.
+ Trying to decompress might fail.
+processing archive C:\STORE.ACE                                           
+Warning: This is not a fully ACE compatible archive.
+ Trying to decompress might fail.
+Warning: This is not a fully ACE compatible archive.
+ Trying to decompress might fail.
+Contents of archive STORE.ACE                                             
+                                                                          
+Date    ³Time ³Packed     ³Size     ³Ratio³File                           
+                                                                          
+02.10.26 15:58   ld ld  100%  HELLO.TXT                                   
+                                                                          
+listed: 1 files, totaling ld bytes (compressed ld)                        
+
+------------- 09/07/26 03:21:21   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std test_diag.ace -outOUT.TXT
+
+Error: No such archive found:
+ C:\test_diag.ace
+
+------------- 09/07/26 03:21:22   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std test_diag.ace -outOUT.TXT
+
+Error: No such archive found:
+ C:\test_diag.ace
+
+------------- 09/07/26 03:21:30   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std test_diag.ace -outOUT.TXT
+
+Error: No such archive found:
+ C:\test_diag.ace

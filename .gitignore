@@ -1,0 +1,15 @@
+# Build artifacts & executables
+build/
+*.o
+*.pyc
+__pycache__/
+/ace
+/mkace
+/unace
+tests/test_core
+testdata/_*
+
+# Work & scratch directories
+_work/
+.backup/
+.tmp_*

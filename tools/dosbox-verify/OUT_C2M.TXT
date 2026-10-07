@@ -1,0 +1,13 @@
+
+
+------------- 09/07/26 05:49:31   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE a -y -std -s- -m3 -c2- LZ77_C2.ACE HELLO.TXT
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+creating archive C:\LZ77_C2.ACE                            
+Working: Creating listfile. Please wait.                   
+  adding HELLO.TXT                                         
+                                                           
+added: 1 files, totaling ld bytes (compressed ld)          

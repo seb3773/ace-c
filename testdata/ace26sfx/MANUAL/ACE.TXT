@@ -1,0 +1,1452 @@
+                             Copyright by ACE Compression Software, August 2005
+
+    Manual of the commandline ACE v2.6 archiver
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     1. Features
+     2. Comparison of ACE v2.6, Rar 2.90 and WinZip 8.0
+     3. Required/recommended/known problems
+          2.1. ACE.EXE, ACE32.EXE, ACE2.EXE
+          2.2. The SFX modules and UNACE
+
+     4. Command line
+          4.1. Help
+          4.2. Commands
+          4.3. Switches
+          4.4. Errorlevels
+          4.5. ACE Environment variable
+
+     5. User interface
+          5.1. The second directory
+          5.2. In a normal directory
+                 5.2.1. Screen
+                 5.2.2. Function keys
+
+          5.3. In an archive
+                 5.3.1. Screen
+                 5.3.2. Function keys
+                 5.3.3. File options
+                 5.3.4. Archive options
+
+          5.4. Other keys
+          5.5. The options menu
+                 5.5.1. Archive options
+                 5.5.2. Shell options
+                 5.5.3. External programs
+
+     6. Archive creation: archive options
+     7. Compression ratio, time and memory
+     8. Encryption
+     9. Comments
+    10. Multi-volume archives
+    11. Repair
+    12. Authenticity verification
+    13. The SFX-modules/UNACE
+    14. Support of non-ACE archives
+    15. Support of long file names (LFNs)
+    16. Language
+  ! 17. Disclaimer
+  ! 18. Registration
+    19. Contact, support, information, latest files, ACE-sources
+    20. Thanks
+    21. Comment
+    22. Glossary: trademarks/terms
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  1. Features
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ACE supports the following major features:
+
+        * special algorithms for executables, bitmaps, sound files and others
+            to achieve compression perfomance never seen before
+        * good compression ratio at high speed using large dictionaries
+            and solid archiving
+        * fast extraction and updates
+        * user interface to make archiving more comfortable
+        * support of long file names at Windows 95/98/NT/2000
+        * ACE.EXE works with different languages;
+           (English, German, Dutch, Polish, Russian, ..)
+        * interface includes a "second directory" as a target directory
+            for operations
+        * creation of multi-volume and self-extracting archives
+        * SFX modules for OS/2, Win32, DOS
+        * supports RAR-, ZIP- and ARJ-archives
+        * shell  detects archives and shows them marked in the file list
+        * processing of archives with many files
+            (100.000 and more - number depends on available memory)
+        * encryption of archived files
+        * addition of recovery records increases probability
+            of full recovery of damaged archives
+        * comments for archives and files
+
+
+  2. Comparison of ACE v2.6, Rar 2.90 and WinZip 8.0
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      Tested on MS Office 2000 (151.399.563 byte in 888 files).
+
+
+      Parameters:
+
+        ACE v2.6     best     -d4096 -m5 -s -c2
+                     norm     -d1024 -m3 -s -c2
+                     fastest  -d1024 -m1 -s -c2
+
+        Rar 2.90     best     -d1024 -m5 -s -mm
+                     norm     -d1024 -m3 -s -mm
+                     fastest  -d1024 -m1 -s -mm
+
+        WinZip 8.0   best     Maximum (slowest)
+                     norm     Normal
+                     fastest  Super fast
+
+
+      Results - sorted by archive size:
+
+        ACE v2.6    best       06:25.80   58.796.254
+        ACE v2.6    norm       05:02.09   60.671.426
+        ACE v2.6    fastest    04:27.71   61.006.265
+        Rar 2.90    best       07:32.31   66.396.178
+        Rar 2.90    norm       05:28.40   66.448.579
+        Rar 2.90    fastest    04:33.74   67.256.724
+        WinZip 8.0  best       04:47.74   71.736.103
+        WinZip 8.0  norm       02:25.26   72.143.044
+        WinZip 8.0  fastest    01:55.82   76.216.747
+
+
+  3. Required/recommended/known problems
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   3.1. ACE.EXE, ACE32.EXE, ACE2.EXE
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        * MS-DOS 3.0 or above
+        * 80386 with at least 2Mb free memory to run the program
+        * a temporary drive for its operations
+        * to update solid archives with 1Mb dictionary there
+            must be additional 2.9Mb free
+        * enough space at the TEMP drive for temporary files and archives
+        * an ega/vga-compatible video card
+
+      recommended to get best speed and compression ratio:
+
+        * Pentium or compatible
+        * 10 Mb free memory
+        * fast temporary drive
+        * disk cache to minimize time spent accessing diskdrive
+             (integrated in Windows)
+        using a multitasking environment such as Windows:
+          * no other running programs
+
+      If you experience any problems using the DOS executable ACE.EXE in
+      Windows 95/98/NT/2000 please try the windows console application
+      ACE32.EXE
+
+      Using a 32bit DOS-extender, ACE.EXE does not run under WINDOWS 3.xx
+      without EMS or XMS. If you have any problems with that use the pif file
+      "ace.pif" to start ace. The DOS-extender also does not work in
+      16bit DPMI environments (an appropriate error message will appear).
+
+      Running ACE.EXE with QEMM v8.03 might cause rare system crashes.
+      (caused by a bug in this version of QEMM)
+
+      There might be also a problem with some programs like UMB_DRV which
+      we could patch. To get a list of those problematically programs visit
+      Harald Feldmann's site:
+				http://www.xs4all.nl/~feldmann
+
+
+   3.2. The SFX modules and UNACE
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        * MS-DOS 3.0 or above
+        * 80386 or higher
+        * enough free memory for the extraction of archives with
+            large dictionaries
+
+
+  4. Command line
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   4.1. Help
+  ÄÄÄÄÄÄÄÄÄÄÄ
+      The important, common operations of ACE are supported at the command
+      line. To get the help screen below type "ACE.EXE /?".
+
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Usage: ACE <command> [-<sw1> ...] <archive> [<base_dir>\] [<files>/@<filelist>]
+
+(..examples..)
+
+<Commands> a  Add files to archive     m   Move files to archive
+           cf Add comment to files     r   Repair archive
+  cm Add main comment                  reg Register ACE
+  cw Write main comment to file        rr  Add recovery record
+  d  Delete files from archive         s   Convert to SFX
+  e  Extract to current directory      t   Test files in archive
+  f  Freshen files in archive          u   Update archive
+  k  Lock archive                      v   Verbosely list of archive contents
+  l  List contents of archive          x   Extract files with full path
+
+<Switches>  av[-] Add AV          (+)  o[-]      Overwrite files           (-)
+            bw[-] BlackWhite mode (-)  out<file> Moves output to <file>
+  c[-]      Show comments         (+)  p<pass>   Set password
+  c2[-]     Use v2.0 compression  (+)  r[-]      Recurse subdirectories    (-)
+  cfg[-]    Make use of ACE.CFG   (+)  rr[-]     Add recovery record       (-)
+  cm[-]     Add main comment      (-)  s[-]      Create solid archive      (+)
+  d<size>   Set dictionary     (1024)  sfx[-]    Create SFX archive        (-)
+  ep[-]     Exclude paths         (-)  std[-]    Standard output mode      (-)
+  err<file> Error output file          t<dir>    Set temp directory
+  f[-]      Full path matching    (-)  tk[-]     Keep archive time         (-)
+  fp[-]     Store full path       (-)  tl[-]     Set arc time to last file (-)
+  fpd[-]    Store path and drive  (-)  to<secs>  Set time-out (0=none)    (60)
+  k[-]      Lock archive          (-)  y[-]      Assume yes on all queries (-)
+  m<0..5>   Set compression level (3)  z<file>   Set comment file
+
+  c2[d/e/p/s][-]    Switch v2.0 compression techniques separately on/off
+                     (meanings: d=Delta, e=Exe, p=Pic, s=Sound)
+  sfx<file>[.sfx]   Specify sfx module by file name
+  v[<size>/-]       Set volume size to <size>*1000; if nothing is          (-)
+                     specified the volume size will be autodetected
+  x<files/@list>    Exclude <files> or files in <list> from process
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      If a commandline error occurs, detailed information about it will be
+      output.
+
+      If you want to extract files to another directory than the current
+      type "ACE x <archive> <directory>\ <files>".
+
+      The file <filelist> may contain a list of files (wildcards allowed).
+      Each file in this list must be listed on a separate line.
+
+      If there is no file specified at all, all files (*.*) will be handled
+      (use -r to recurse subdirectories).
+
+      To move the output to screen and into a file in parallel use
+      "-out<file>" instead of ">><file>".
+
+
+   4.2. Commands
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        a   -  Add
+            adds (compresses) the specified files to the archive
+
+        cf  -  Add file comment
+            after the input the comment will be added to all specified
+            files
+
+        cm  -  Add main comment
+            adds a new main comment or replaces the old main comment of an
+            archive
+
+        cw  -  Write main comment to file
+            writes main comment of archive to file; its file name has to
+            be specified at the <files> place of the command line
+
+        d   -  Delete
+            deletes the specified files from the archive
+
+        e   -  Extract
+            extracts (decompresses) the specified files
+            from the archive without directory structure
+
+        f   -  Fresh
+            freshens the files in archive; this means if any specified file
+            is newer than an existing! file in the archive the file in the
+            archive will be replaced
+
+        k   -  Lock archive
+            locks archive; locked archives can not be modified anymore  
+
+        l   -  List
+            lists files of archive; no file comment, no path will be displayed
+
+        m   -  Move
+            the result is the same like using ADD and then deleting the
+            specified files
+
+        r   -  Repair
+            this creates a new archive "REPAIRED.ACE" and adds all recovered
+            files from the specified archive
+
+        reg -  Register ACE
+            calls the registration function of ACE; you will have to input
+            a valid general or personal key
+
+        rr  -  Add recovery record
+            adds recovery record to archive; see chapter 11 (Repair) for
+            information about recovery records
+
+        s   -  Convert to SFX
+            converts an existing ace-archive to a self-extracting one;
+            you can specify which sfx has to be used by "-sfx" or
+            "-sfx<file>"
+
+        t   -  Test
+            tests all archived files for integrity
+
+        u   -  Update
+            freshens (see Fresh) existing files and adds nonexisting files
+
+        v   -  Verbosely list of archive contents
+            lists files of archive; file comments and paths of file names
+            will be displayed
+
+        x   -  Extract
+            in contrast to the "e"-EXTRACT comment, this will extract files
+            with full directory structure
+
+
+   4.3. Switches
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        av[-]     -  Add AV
+                  switches the authenticity verification (registered
+                  version only) at the creation of new archives on/off
+
+        bw[-]     -  Black/white
+                  toggles displaying of status controls and warnings in
+                  black & white mode
+
+        c[-]      -  Show comments
+                  allow or disallow comments to be displayed during the
+                  extraction of an archive
+
+        c2[-]     -  v2.0 compression techniques
+                  toggles use of all ACE v2.0 compression techniques
+                  (delta, exe, pic, sound)
+                  attention: v2.0 archives can not be extracted by ACE v1.x
+
+        c2[d/e/p/s][-]  - Switch certain v2.0 compression technique(s)
+                  toggles use of specified ACE v2.0 compression techniques
+                  (example: -c2es- switches off special exe and sound
+                  compression)
+
+        cfg[-]    -  Use defaults
+                  states wheather the configuration file or the default
+                  settings shall be used
+                  (all settings can be overridden at commandline)
+
+        cm[-]     -  Add main comment
+                  add a main comment at archive creation when on
+
+        d<size>   -  Dictionary size
+                  sets the dictionary for compression in kilobytes;
+                  possible values are 32, 64, 128, 256, 512, 1024, 2048, 4096
+
+        ep[-]     -  Exclude paths
+                  specified files will be archived without directory structure
+
+        err<file> -  Log on errors
+                  All errors occuring during the run will be appended to
+                  <file>.
+
+        f[-]       -  Use full path of match
+                   tells the archiver to process only those files of the
+                   archive which match exactly to the specified files;
+                   for example "ACE x -f ACE.TXT" will not extract
+                   DEUTSCH\ACE.TXT
+
+        fp[-]     -  Save full paths
+                  specified files will be archived with full path
+                  (excluding the drive)
+
+        fpd[-]    -  Save full paths with drive
+                  specified files will be archived with full path and drive
+
+        k[-]       -  Lock
+                   switches locking of new archives after their creation
+                   on/off; locked archives can not be modified anymore
+
+        m<0..5>    -  Compression level
+                   sets the compression level to
+                   0=store, 1=fastest, 2=fast, 3=normal, 4=good or 5=best
+
+        o[-]       -  Overwrite
+                   during extract and add operations, existing files will be
+                   replaced without asking
+
+        out<file>  -  Output to <file>
+                   moves outputs to <file>
+
+        p<pass>    -  Password
+                   this password will be used for encryption and decryption
+                   of files
+
+        r[-]       -  Recurse subdirectories
+                   all files of the specified directories will be added as
+                   well
+
+        rr[-]      -  Add recovery record
+                   turns the adding of recovery data after archive
+                   modifications on/off
+
+        s[-]       -  Create solid archive
+                   indicates whether to make new archives solid or not
+
+        sfx[-]     -  Add SFX-module
+                   turns the creation of self-extracting archives on or off;
+                   the default SFX module will be used, which is the 32bit
+                   DOS-SFX with long filename support
+
+
+        sfx<file>  -  Add certain SFX-module
+                   using this switch you can specify a certain sfx file
+                   (*.SFX) where a SFX module is stored in;
+                   typically you can find the SFX files in a sub directory,
+                   named SFXFILES, but you must not specify the path as
+                   ACE looks for SFX files in the ACE and SFXFILES directory
+                   automatically
+                   (example: -sfxSFXFILES\WIN32.SFX or -sfxWIN32)
+
+        std[-]     - Output in standard mode; if not specified everything
+                   will be output in windows;
+                   if the switch "-out" is used or if stdout does not point
+                   to the console device the standard output mode will be
+                   used automatically
+
+        t<dir>     - Set temporary directory
+                   sets the temporary directory ACE uses to create list files
+                   or temporary archives
+
+        tk[-]      - Keep archive time
+                   keeps original file time of the archive
+
+        tl[-]      - Set archive time to last file
+                   sets the file time of the archive to the file time
+                   of the latest file in the archive
+
+        to<secs>  - Set time-out
+                   sets the time-out limit to <secs> seconds;
+                   if <secs> is zero, then there is no time limit;
+                   a time out error occurs if the user did not react
+                   on a request until the time limit was reached
+
+        v[-]       -  Autodetect volume size
+                   creates multi-volume archive;
+                   detects volume size automatically,
+                   to fill destination disks completely
+
+        v<size>    -  Set volume size
+                   creates multi-volume archive;
+                   sets volume size to <size>*1000 bytes
+
+        x<files>   - exclude <files> from process
+                   excludes <files> - although included by specification -
+                   from being processed
+
+        x@<list>   - exclude files in list file
+                   excludes files in the list file from being processed
+
+        y[-]       -  Yes on all queries
+                   questions like "File already exists:\<file> Overwrite?"
+                   and  "Extract: Use current password?" will be answered
+                   with Yes automatically
+
+        z<file>    -  Comment file
+                   content of <file> will be used as comment at the creation
+                   of a new archive or when using the commands "cm" or "cf"
+
+        Where an option is not explicitly set the default or the saved
+        configuration (if no -cfg- is specified) will be used.
+
+
+   4.4. Errorlevels
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ACE, UNACE and the SFX modules can return the following values as result
+     of an operation:
+
+     errorlevel   meaning
+
+      0           no error; operation was succesful
+
+      1           insufficient memory
+
+      2           no files specified
+
+      3           the specified archive or list file was not found
+
+      4           disk full
+
+      5           could not open file
+
+      6           read error
+
+      7           write error
+
+      8           invalid command line
+
+      9           CRC error
+
+      10          other error
+
+      11          file already exists
+
+      255         user break (Ctrl+C or Ctrl+Break)
+
+
+   4.5. ACE Environment variable
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     You can use the ACE environment variable to define switches you always
+     want to be used when using ACE in commandline mode.
+
+     Example: adding following to the AUTOEXEC.BAT will cause ACE to recurse
+              always subdirectories and lock archives:
+
+       SET ACE=-r -l
+
+
+  5. User interface
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   5.1. The second directory
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ACE supports source-destination technique. The files of the current
+      source directory/archive are listed on the left side of the screen.
+      The destination directory, also called second directory, is mentioned
+      at the bottom of the right side of the screen. To exchange the source
+      for the destination you will have to press <tab>.
+      The fastest way to set the destination equal to the source is <shift+tab>.
+
+   5.2. In a normal directory
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    5.2.1. Screen
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      A (split) example with explanation for the screen in a normal
+      directory is listed below.
+
+
+   file names  filesizes  filetimes   current source directory
+      ³            ³           ³  ³   ³
+      ³            ³           ³  ³   ³
+ÄÄÄÄÄÄ³utÄÄÄÄÄÄÄÄÄÄ³Ä   ÄÄÄÄÄÄÄ³ÄÄ³Ä  ³ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄÄÄ
+ÉÍÍÍÍÍ³ÍÍÍÍÍÍÍÍÍÍÍÍ³ÍÍÍÍÍÍÍÍÍÍÍ³ÍÍ³ÍÍ C:\ ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+º    N³me        Si³e      Date³  ³ime º    ACE-ARCHIVER v2.6   UNREGISTERED   º
+º ..  ³       |>UP--DIR<³16.02.97³20:46ºÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ Memory ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄº
+º cd-list  ace|   114100³ 4.02.97³12:18º Free memory                 ¿ 49.111K º
+º cd01file lst|    86103³13.01.97³23:28º Add, update, fresh, sol-de¿e³e  4096K º
+º cd02file lst|   139560³16.01.97³15:33º Extract, view           ¿ ³ ³   4096K º
+º cd03file lst|   100331³13.01.97³23:26ºÄÄÄÄÄÄÄÄÄ Temporary direc³o³y³ÄÄÄÄÄÄÄÄÄº
+º cd04file lst|   127981³13.01.97³23:23º Path                  ¿ ³ ³ ³ C:\TEMP º
+º cd05file lst|   161393³13.01.97³23:20º Space               ¿ ³ ³ ³ ³733.664K º
+ÄÄÄÄÄÄcutÄÄÄÄÄ³ÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄÄÄÄÄ³Ä³Ä³ ³ ³ÄÄÄÄÄÄÄÄÄÄ
+              ³                                              ³ ³ ³ ³ ³
+   file name list boundary;       space at temporary directory ³ ³ ³ ³
+   adjustable by mouse               path of temporary directory ³ ³ ³
+                                                                 ³ ³ ³
+                                  maximum decompression dictionary ³ ³
+                                      maximum compression dictionary ³
+                                                  displays free memory
+
+      The decompression/compression dictionary maximum is only estimated.
+      It might be possible to decompress/compress with a larger dictionary
+      than displayed.
+
+                                       ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄ
+                                       ºÄÄÄÄÄÄÄÄÄ Archive information ÄÄÄÄÄÄÄÄÄº
+   information about selected archive ÄÄÄSol-archive CD-LIST.ACE      Type ACE º
+                                       ºÄÄÄÄÄÄÄÄÄÄÄÄÄÄ Settings ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄº
+                                       º Dictionary size                 1024K º
+                                       º Compression level              Normal º
+ The settings can be                   º Make always solid             Enabled º
+ changed by mouse.                     º Use v2.0 compression          Enabled º
+                                       º Add SFX module                   None º
+                                       º Add recovery record          Disabled º
+            general password present? ÄÄÄEncrypt files with password  Disabled º
+                                       º Add auth. verification       Disabled º
+   default main comment file present? ÄÄÄAdd default comment file     Disabled º
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ºÄÄÄÄÄÄÄÄÄ Second directoryÄÄÄÄÄÄÄ(tab)Äº
+º             ³         ³        ³     º  D:\                ¿                 º
+ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ Free: 339.456K¿ÊÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ³ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+1Help   2Add    ¿View   4Fresh  5Copy ³ 6Move   7MkDir  8Dele³e 9Option 10Quit
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄ³ÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ  ³ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄ³ÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄÄÄ
+                ³                     ³                      ³
+    description of function keys      ³           second/destination directory
+                              space on current drive
+
+
+    5.2.2. Function keys
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Most keys have the same functions when the source is an archive.
+      This includes Help (F1), View (F3), Freshen (F4), Copy (F5), Move (F6),
+      MkDir (F7), Delete (F8), Option (F9), Quit (F10), Drive (Alt+F1),
+      Update (Alt+F4), EGA-M. (Alt+F9) and the sorting F-keys Ctrl+F3..F7.
+      These functions will not be explained in chapter 5.3.2. again.
+
+      F1  -  Help
+          displays a short help on ACE
+
+      F2  -  Add
+          similar to RAR: adds the selected files to an archive in the
+          current directory
+
+      F3  -  View
+          views the file at the cursor in "text mode";
+          if an external program has been specified to be called at this
+          file, this will be called instead of viewing the file
+          (see 5.5.3. External programs)
+
+      F4  -  Fresh
+          freshens the 2nd directory with the files of the first directory
+
+      F5  -  Copy
+          copies the selected files to the 2nd directory
+          it can be used in archives, too; in this case files
+          will be added or extracted
+
+      F6  -  Move
+          copies (or adds/extracts) files and deletes them after a fully
+          successful operation
+
+      F7  -  MkDir
+          creates a new subdirectory
+
+      F8  -  Delete
+          deletes selected files/directories
+
+      F9  -  Option
+          displays the options window of the program
+
+      F10 -  Quit
+          quits ACE
+
+
+      Alt+F1  -  Drive
+              changes the current drive
+
+      Alt+F2  -  Solid
+              same like Add (F2); creates solid archive
+
+      Alt+F3  -  SFX
+              same like Add (F2); creates self-extracting archive
+
+      Alt+F4  -  Update
+              updates the 2nd directory with the files of the first directory
+
+      Alt+F5  -  MkCopy
+              this is one of the more complex functions: an archive will be
+              created in the 2nd (normal) directory and the selected files
+              will be added to it
+
+      Alt+F6  -  MkMove
+              the relation between MkCopy and MkMove is the same as it is
+              at Copy and Move; after a successful MkCopy the selected files
+              will be deleted
+
+      Alt+F7  -  MkArch
+              creates a new archive in the current directory
+
+      Alt+F8  -  Repair
+              creates a new archive "REPAIRED.ACE" and adds all recovered
+              files from the archive at the cursor
+
+      Alt+F9  -  EGA-M.
+              switches EGA/VGA-cards to 50lines mode; as a result more files
+              can be displayed at the same time
+
+      Ctrl+F1 - View ACE.TXT
+              views the file ACE.TXT if present in the directory where ACE is
+              started from; can be used as an extended online-help
+
+      Ctrl+F3..Ctrl+F7  -  Sort order
+                        sets the order of the listed files to
+                        name, extension, time, size or unsorted
+
+      At operations like "copy" the selected subdirectories
+      are always recursed.
+
+
+   5.3. In an archive
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    5.3.1. Screen
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Here is an example of the screen displayed when in an ACE-archive:
+
+                                                        description of archive
+(LFN)file names  filesizes              source (archive)         ³
+      ³            ³                        ³                    ³
+ÉÍÍÍÍÍ³ÍÍÍÍÍÍÍÍÍÍÍÍ³ÍÍÍÍÍÍÍÍÍ D:\LISTEN\listen.ace ËÍÍÍÍÍÍÍÍÍÍÍÍÍ³ÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+º    N³me        Si³e       Packed     Date   Time º             ³             º
+º ..  ³       |>UP--DIR<³           ³        ³     º Archive     ´  LISTEN.ace º
+º cd-files lst|   114100³      17008³ 4.02.97³12:18º Archive typeÙ         ACE º
+º cd01file lst|    86103³      27704³13.01.97³23:28º Created          3.9.2000 º
+º cd02file lst|   139560³      32432³16.01.97³15:33º Solid                 Yes º
+º cd03file lst|   100331³       8236³13.01.97³23:26º SelFeXtracting         No º
+º cd04file lst|   127981³      11436³13.01.97³23:23º Main comment       Absent º
+º cd05file lst|   161393³      25444³13.01.97³23:20º File comments      Absent º
+º cd06file lst|   128233³       2888³13.01.97³23:16º Passwords          Absent º
+º cd07file lst|   102686³      40960³13.01.97³23:13º Recovery record    Absent º
+º cd08file lst|    92187³       6364³13.01.97³23:09º Lock               Absent º
+º cd09file lst|   101686³      35068³17.01.97³20:28º Auth. verif.       Absent º
+º cd10file lst|   120157³       4444³ 4.02.97³01:39º Dictionary       ¿  1024K º
+º hd-files lst|   114100³    Ú  9736³ 4.02.97³12:18º Files            ³     12 º
+º             |         ³    ³      ³      ³ ³³    º Total length     ³ 1.355K º
+º             |         ³    ³      ³      ³ ³³    º Packed length    ³221.720 º
+º             |         ³    ³      ³      ³ ³³    º Ratio            ³  15.9% º
+º            Ú|         ³    ³      ³      ³ ³³    º Version to extr¿ ³    2.0 º
+º            ³|         ³    ³      ³      ³ ³³    º Host OS      ¿ ³ ³ MS-DOS º
+ÄÄÄÄÄÄcutÄÄÄÄ³ÄÄÄÄÄÄÄ   ÄÄÄÄÄ³ÄÄÄÄÄÄ   ÄÄÄÄ³ÄÄ³ÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄ ³ ³Ä³ÄÄÄÄ
+             ³ size of ÄÄÄÄÄÄÙ             ³  ³                   ³ ³ ³
+             ³ packed files     filetimes ÄÁÄÄÙ                   ³ ³ ³
+             ³                             operating system ÄÄÄÄÄÄÙ ³ ³
+   file name list boundary;                where archive is         ³ ³
+   adjustable by mouse                     created on               ³ ³
+                                               minimum version ÄÄÄÄÄÙ ³
+                                               of ACE required   required size
+                                               to extract and    of dictionary
+                                               modify archive    to extract
+
+
+    5.3.2. Function keys
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      This chapter explains only the functions which differ from the functions
+      available with normal directories. See chapter 5.2.2. for the other ones.
+
+
+      F2  -  Extr
+          extracts the selected files to the current directory
+
+      Alt+F2  -  Solid
+              when applied to a non-solid archive, the archive will be
+              recreated into a solid archive; see chapter 5.3.4. (recreate)
+
+      Alt+F3  -  SFX
+              in case the archive is not already self-extracting, it will be
+              turned into one
+
+      Alt+F7  -  FilOpt
+              this will call up the file options window; see chapter 5.3.3.
+
+      Alt+F8  -  ArcOpt
+              calls up the archive options window; see chapter 5.3.4.
+
+      Alt+F10  -  Test
+               tests the files of the archive for their integrity
+
+
+    5.3.3. File options
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      The options of the selected files can be changed by pressing <Alt+F7>.
+      A menu will be opened with "Encrypt" and "Edit file comments".
+
+      "Encrypt" lets you enter a password (if there is no general one).
+      All selected files will be encrypted with this password. If a file is
+      already encrypted, the old password will loose its validity.
+
+      "Edit file comments" reads the comment of the first file in archive
+      which is selected. You will be able to modify this comment before
+      ACE writes it to all selected files.
+
+
+    5.3.4. Archive options
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      By pressing <Alt+F8> you will get a list with "Recreate", "Lock archive",
+      "Edit main comment", "Add recovery record", "Add auth. verific." and
+      "Add SFX-module".
+
+      Take note of the following when using "Recreate":
+
+      Recreate extracts all files of the current archive to the
+      temporary directory. After extraction you might be asked whether it is
+      okay to overwrite an existing archive (the one you just extracted from).
+      If an error occurs during this stage, or if you cancel the process, the
+      old archive will be gone. Do not panic! The extracted files
+      in the temporary directory will not be deleted and the archiver will
+      set the current directory to the temporary one. But you will have to
+      rebuild the archive yourself. (You may use "add" for this).
+      When recreating a multi-volume archive to a normal archive the volumes
+      won't be deleted. You have to do this yourself.
+
+      "Lock archive" provides protection against further modifications of the
+      archive. No add of files, add of comments etc. will be allowed any more.
+
+      "Edit main comment" reads the comment of the archive. You will have the
+      possibility to modify the comment before it is written back to the
+      archive.
+
+      "Add recovery record" - see chapter 11. Repair
+
+      "Add auth. verific."  - see chapter 12. Authenticity verification
+
+      "Add SFX-module"      - the archive will be made self-extracting;
+                              result is the same when pressing <Alt+F3>
+
+
+
+   5.4. Other keys
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      There are several hotkeys you have to know about.
+
+      Alt+C  -  Switch colour mode
+             toggles colour on/off
+
+      Alt+D  -  Select dictionary size
+             displays window to choose dictionary for compression
+
+      Alt+J  -  DOS shell
+             runs the operating system command interpreter
+             (usually COMMAND.COM)
+
+      Alt+M  -  Select compression level
+             see chapter 7 for the function of the compression level
+
+      Alt+S  -  Save setup
+             saves the current adjustments of the program
+
+      Alt+T  -  Set temporary directory
+             asks for a new temporary directory
+
+
+      There are also keys to select a group of files. These are:
+
+      Insert/Space  -  selects file at cursor
+
+      "+"  -  selects group of file by specified string
+
+      "-"  -  unselects group of file by specified string
+
+      "*"  -  reverses selection
+
+
+   5.5. The options menu
+  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Press <F9> to change the options of ACE.
+      A menu containg following buttons will appear:
+
+        * Archive options
+        * Shell options
+        * External programs
+        * Set temporary directory
+        * Save Setup
+
+      Next only "Archive options", "Shell options" and "External programs"
+      will be shown in detail. The function of the last buttons should be
+      self-explaining. The menu can be left by ESC.
+
+    5.5.1. Archive options
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      In case there is no mouse to change the archiving settings in the main
+      screen, you can modify the important ones at "Archive options".
+
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄ
+  º  ÚÄ Add ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿  ÚÄ Dictionary ¿  ÚÄ Level ÄÄÄÄÄ¿  º
+  º  ³ [x] Make always solid            ³  ³ (*) 32   K  ³  ³ ( ) Store   ³  º
+  º  ³ [x] V2.0 compression  (details ) ³  ³ ( ) 64   K  ³  ³ ( ) Fastest ³  º
+  º  ³ [ ] Create SFX        (None    ) ³  ³ ( ) 128  K  ³  ³ ( ) Fast    ³  º
+  º  ³ [ ] Add recovery record          ³  ³ ( ) 256  K  ³  ³ (*) Normal  ³  º
+  º  ³ [ ] Encrypt files with password  ³  ³ ( ) 512  K  ³  ³ ( ) Good    ³  º
+  º  ³ [ ] Add authentic. verification  ³  ³ ( ) 1024 K  ³  ³ ( ) Best    ³  º
+  º  ³ [ ] Add default comment          ³  ³ ( ) 2048 K  ³  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  º
+  º  ³ [ ] Do not compress archives     ³  ³ ( ) 4096 K  ³                   º
+  º  ³ [ ] CRC-Check after add          ³  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ                   º
+  º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ                                    º
+  º                                          [ ] Command line log file       º
+  º  ÚÄ Extract ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿                                    º
+  º  ³ [ ] Use current password         ³                                    º
+  º  ³ [x] View comments                ³        Ok   Ü         Cancel   Ü   º
+  º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ      ßßßßßßßß       ßßßßßßßßßßßß   º
+  º                                                                          º
+ÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄÄÄ
+
+      To verify proper operation of the software during compression and
+      decompression, activate the option "CRC-check after add". If an error
+      is detected, source files won't be deleted (at move operation), but the
+      old archive won't be restored either.
+
+      Archives are generally uncompressible. To save time during compression,
+      switch on "Do not compress archives". This will store all ACE, RAR,
+      ZIP, ARJ, LHA and LHZ files automatically.
+
+      Enable the option "Use current password" to avoid the prompt
+      "Extract: Use current password?".
+
+      With "View comments" you may choose not to display file and archive
+      comments.
+
+      "Command line log file" declares a log file which is used as a default
+      when running ACE in commandline mode. This saves space at the parameter
+      list. (alternatively you can use the ACE environment variable for this)
+
+      An explanation of the meaning of the other options can be found at
+      these chapters:
+        "Make always solid",
+        "Dictionary",
+        "Level"                -  7. Compression ratio, time and memory
+        "Add recovery record"  - 11. Repair
+        "Default comment file" -  9. Comments
+        "Encrypt files"        -  8. Encryption
+        "Add auth verific"     - 12. Authenticity verification
+        "SFX module to use"    - 13. The SFX-modules/UNACE
+                               at this box you can specify which SFX module
+                               will be used whenever a SFX shall be created
+                               or an archive shall be made selfextracting
+
+
+    5.5.2. Shell options
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        º  ÚÄ Detect archives ÄÄÄÄÄÄÄÄ¿  ÚÄ Show archives ÄÄÄÄÄÄÄÄÄÄ¿  º
+        º  ³ ( ) No detection         ³  ³ [x] Highlight archives   ³  º
+        º  ³ (*) By extension         ³  ³ [x] Arrange archives     ³  º
+        º  ³ ( ) By file content      ³  ³ [x] Archive information  ³  º
+        º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  º
+        º                                                              º
+        º  ÚÄ Sort files ÄÄÄÄÄÄÄÄÄÄÄÄÄ¿  ÚÄ Display mode ÄÄÄÄÄÄÄÄÄÄÄ¿  º
+        º  ³ (*) By name              ³  ³ [x] colour               ³  º
+        º  ³ ( ) By extension         ³  ³ [ ] 43/50 lines          ³  º
+        º  ³ ( ) By time              ³  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  º
+        º  ³ ( ) By size              ³                                º
+        º  ³ ( ) Unsorted             ³       Ok  Ü      Cancel   Ü    º
+        º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ      ßßßßßß    ßßßßßßßßßßßß    º
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      ACE can detect archives by extension or by file content. Detection by
+      extension is much faster than detection by file content, but does not
+      detect self-extracting archives. If you don't like this option at all
+      choose "No detection".
+
+      The detected archives can be displayed in different ways. 
+      "Highlight archives" highlights them from the other files listed in the 
+      file list. Switching on "Arrange archives" will list all archives 
+      between subdirectories and the other files. "Archive information" will 
+      display archive information if the cursor is placed on the archive name
+      for a short moment and the archive is being identified as such.
+
+      The sort criterion for the file list in the shell here, too.
+      (you may use Ctrl+F3..Ctrl+F7)
+
+      You can switch between colour and black-and-white mode by the colour
+      option or by pressing Alt+C. The EGA-mode (43/50 lines) - which offers
+      to display more files at once on the screen - can also be set by Alt+F9.
+
+
+    5.5.3. External programs
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ACE offers to execute user-specified commands when F3 or Enter has been
+      pressed. The settings may be changed at "External programs" in the
+      options menu. An additional menu will appear asking the user for which
+      key modifications he wants to make:
+
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                   º            Programs called at F3        Ü   º
+                   º     ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß   º
+                   º          Programs called at Enter       Ü   º
+                   º     ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß   º
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+      This is the default for the F3 key:
+
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    º   ÄÄÄÄÄÄÄÄÄÄÄÄ¿                                                      º
+    º   *.exe *.com Ü    *.lzh *.lha Ü     - free -   Ü     - free -   Ü   º
+    º   ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß   º
+    º    - free -   Ü     - free -   Ü     - free -   Ü     - free -   Ü   º
+    º   ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß   º
+    º    - free -   Ü     - free -   Ü     - free -   Ü     - free -   Ü   º
+    º   ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß   º
+    º    - free -   Ü     - free -   Ü     - free -   Ü     - free -   Ü   º
+    º   ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß    ßßßßßßßßßßßßß   º
+    º  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿  º
+    º  ³  Files:    *.exe *.com                                         ³  º
+    º  ³                                                                ³  º
+    º  ³  Command:  %s                                                  ³  º
+    º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  º
+    º                                                                      º
+    º                        Ok     Ü       Cancel    Ü                    º
+    º                     ßßßßßßßßßßß     ßßßßßßßßßßßßß                    º
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      Below all the buttons the full information of a specification is dis-
+      played. As an example, the first button is selected. So the information
+      box tells us, that whenever the file cursor of the shell is at a EXE or
+      COM file and F3 is pressed, "%s" will be executed. %s is the file which
+      was selected when the key has been pressed. So if the user presses F3 at
+      an EXE file, this file will be executed.
+      The default F3-definition for LZH and LHA files is "LHA l %s". Means
+      that LHA will be called (if it can be found on disk) to list the
+      contents of the selected archive. To call batch files, you have to use
+      sth. like "COMMAND.COM /C %s" or "COMMAND.COM /C test.bat %s".
+      (first can call selected batch files, second a certain batch file
+      with selected file as parameter)
+
+
+  6. Archive creation: archive options
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Every time a new archive has to be created within the GUI, you will be
+      asked for the archive options.
+
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄ
+  º  ÚÄ Add ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿  ÚÄ Dictionary ¿  ÚÄ Level ÄÄÄÄÄ¿  º
+  º  ³ [x] Solid                        ³  ³ (*) 32   K  ³  ³ ( ) Store   ³  º
+  º  ³ [x] V2.0 compression  (details ) ³  ³ ( ) 64   K  ³  ³ ( ) Fastest ³  º
+  º  ³ [ ] Create SFX        (None    ) ³  ³ ( ) 128  K  ³  ³ ( ) Fast    ³  º
+  º  ³ [ ] Add recovery record          ³  ³ ( ) 256  K  ³  ³ (*) Normal  ³  º
+  º  ³ [ ] Encrypt files with password  ³  ³ ( ) 512  K  ³  ³ ( ) Good    ³  º
+  º  ³ [ ] Add authentic. verification  ³  ³ ( ) 1024 K  ³  ³ ( ) Best    ³  º
+  º  ³ [ ] Add main comment             ³  ³ ( ) 2048 K  ³  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  º
+  º  ³ [ ] Do not compress archives     ³  ³ ( ) 4096 K  ³                   º
+  º  ³ [ ] CRC-Check after add          ³  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ                   º
+  º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ                                    º
+  º                                                                          º
+  º  ÚÄ Volume size ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿                                    º
+  º  ³ (*) none            ³ ( ) 1.2  M ³                                    º
+  º  ³ ( ) Autodetect      ³ ( ) 1.44 M ³                                    º
+  º  ³           Thousands ³ ( ) 2.88 M ³        Ok   Ü         Cancel   Ü   º
+  º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ      ßßßßßßßß       ßßßßßßßßßßßß   º
+  º                                                                          º
+ÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  ÄÄÄÄÄÄÄ
+
+      You can set the dictionary size, the volume size and the basic options
+      the archive will be created with.
+
+      An explanation of the options can be found at these chapters:
+        "Solid", "Dictionary"  -  7. Compression ratio, time and memory
+        "Encrypted"            -  8. Encryption
+        "Recovery rec"         - 11. Repair
+        "Auth verific"         - 12. Authenticity verification
+        "Main comment"         -  9. Comments
+        "Volume size"          - 10. Multi-volume archives
+
+
+  7. Compression ratio, time and memory
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      There are several options that improve compression. Some affect the
+      memory requirements, others affect the time needed to compress or
+      update.
+
+      "Solid archiving" takes advantage of the fact that all files in an
+      archive can be viewed as one continuous stream of data. When updating
+      (adding or deleting) such an archive, ACE needs to re-read all
+      previously compressed data in order to maintain that continuous
+      stream since any file added or removed will have to be, or has been,
+      part of it. Solid archiving is therefore a more time consuming process
+      than regular archiving. The benefit of solid archiving is stronger
+      compression of your data.
+
+      You should not use solid archives when a large archive requires
+      frequent updates and time is an essential factor.
+
+      Note that solid archiving does not slow down extraction of the whole
+      archive when compared to non-solid archives.
+
+      The best way to increase compression is to increase the dictionary size.
+      This will also increase the memory requirements at compression and
+      decompression.
+
+      Please bear in mind that the full version of ACE requires a 386+ CPU
+      and a 32-bit DPMI host. When uncompressing you will need enough memory
+      to build the dictionary used during compression. That means if you used
+      a 1024 Kb dictionary during compression, you will need this same
+      dictionary during uncompression. Your target machine must be able
+      to provide this much EMS or XMS memory. When using 256 Kb dictionaries,
+      conventional memory may be enough. The limit of SFXSR for dictionary
+      size in conventional memory is 512 Kb, but few machines will have
+      enough free memory to accommodate this size.
+
+      Compression level has no effect on memory use. It is an algorithm
+      optimization and thus affects only time. The default compression level
+      is a compromise between time and ratio. If there is a need for better
+      compression, like compressing for use on the internet, set the
+      compression level to "good".
+
+      In ACE v2.6 new compression techniques has been invented. They increase
+      compression performance with only low effect on memory requirements.
+      Four techniques has been added: delta, exe, pic and sound compression.
+      Files to be compressed are analyzed and if ACE notices that one of the
+      new techniques will improve compression, it will use this technique.
+      The delta compression helps on several file types (hard to say on which).
+      Exe compression is for all files containing x86 code (exe, dll, obj ..).
+      Images are best compressed when pic compression is switched on, for
+      sound witch on the sound compression!
+
+      The new ACE v2.6 techniques are not compatible with ACE v1.x. But
+      all techniques are switched off, ACE v2.6 will create archives that
+      still can be extracted by ACE v1.x.
+
+      Memory requirements:
+
+        dictionary size    required memory
+        (in kb)                 (Mb)
+
+             32                 4.72
+             64                 4.91
+            128                 5.28
+            256                 6.03
+            512                 7.53
+           1024                 10.53
+           2048                 16.53
+           4096                 28.53
+
+        additionally there will be quite a large amount of memory necessary
+        if you attempt to archive thousands of files (just multiply the file
+        number with the average file path length of these files).
+
+
+  8. Encryption
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      You are able to encrypt archived files to protect your sensitive
+      data against unauthorized access. This program does not use RSA so
+      it may be distributed in the United States of America.
+
+      Encryption can be added while compressing or afterwards. To encrypt
+      files being added to an existing archive, set the password at the
+      main screen, if you are creating a new archive, you may also set
+      the password in the archive options window.
+
+      To encrypt after compression, enter the archive and press <Alt+F7>.
+      Choose "Encrypt" from the appearing file options window (see chapter
+      5.3.3.). Only the selected files will be encrypted.
+
+      In order to process files in a solid archive, you need to enter the
+      correct passwords for each of these files since they have to be ana-
+      lyzed for processes.
+
+      When adding to an archive the compression password will be set to the
+      general password, which can be set at the main screen. The same applies
+      to the decompression password during extraction. Changing the
+      compression password in the archive option window or changing the
+      decompression password at requests will not affect the general one.
+      On the command line you can set the general password by using the
+      "p"-switch.
+
+      To protect against hackers passwords are not saved in archives or in
+      the configuration file. You will have to keep them in your mind.
+      The author of this program is not able to recover lost passwords!
+
+      For security you should choose a long password which nobody except you
+      knows or can find out. The program distinguishes between upper and
+      lower case, the maximum length of a password is 56 characters.
+
+
+  9. Comments
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      There are two types of comments: the archive comment and the file
+      comment. The archive comment is displayed during every extraction from
+      the archive. The file comment, which is linked to a specific file in
+      the archive, is only displayed when that file is being extracted.
+
+      If you wish to use the content of a file as main comment: declare a
+      "default comment file". This can be done at the main screen or at the
+      commandline by using the "z"-switch (3.3. Switches). The file will be
+      used as a main comment for each archive that will be created.
+      Another way is to input the comment when creating a new archive. Set
+      the option "Main comment" at the archive options (5. Archive creation:
+      archive options).
+
+      The file comments have to be added after the adding of the files. Use
+      the file options window (4.3.3. FILE OPTIONS) or the "cf"-command to
+      comment the selected files.
+      The main comment can be modified later, too. See 5.3.4. Archive options
+      and the "cm"-command (3.2. Commands).
+
+      The maximum size of the comments is 32 Kb. Due to the screen resolution
+      the maximum size of the comments entered manually is 4Kb.
+
+
+  10. Multi-volume archives
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      To span a large archive over several disks you will have to split the
+      archive. The best way to do this is to create "multi-volume" archives.
+
+      Handling multi-volume archives is nearly as easy as handling "normal"
+      archives. A disadvantage of multi-volume archives is that ACE has
+      no possibility to add to them. Once created the archive can't be
+      modified.
+
+      To create a multi-volume archive you have to set a volume size at the
+      archive options window:
+
+ÄÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  º  ÚÄ Volume size ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿                                    º
+  º  ³ ( ) none            ³ ( ) 1.2  M ³                                    º
+  º  ³ ( ) Autodetect      ³ (*) 1.44 M ³                                    º
+  º  ³           Thousands ³ ( ) 2.88 M ³        Ok   Ü         Cancel   Ü   º
+  º  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ      ßßßßßßßß       ßßßßßßßßßßßß   º
+ÄÄÄÄÄcutÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄ   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      The autodetection feature creates volumes according to the space on the
+      destination disk. The minimum of the size is 65Kb. If there is not
+      enough space to save the archive you will be asked to change the
+      destination.
+
+      Before a new volume is created ACE will prompt you to change the
+      destination. This helps to create archives directly onto floppy disks.
+
+      The volumes are named this way:
+        <archive>.ACE, <archive>.C00, <archive>.C01 .. <archive>.C99,
+        <archive>.100 .. <archive>.999. 
+      So the limit is 1001 volumes per archive.
+
+      To decompress a file of a solid multi-volume archive ACE needs all
+      previous volumes. So be careful with your volumes!
+
+
+  11. Repair
+ ÄÄÄÄÄÄÄÄÄÄÄÄ
+      Use this function to recover the files of a damaged archive. It is
+      activated by pressing <Alt+F8> (chapter 5.2.2.) in the shell or by
+      using the "r"-command in commandline mode.
+
+      Above all solid archives are very susceptible to damages. To lower the
+      risk you should add recovery records to your important archives.
+      Such a record contains data about the whole archive to replace damaged
+      sectors. The record size depends on the archive size:
+
+        archive size  ?..64K     64K..512K     512K..1024K     1024K..?
+        record size       1K            2K              4K           8K
+
+      The size increase is small, but the safety increase is a lot.
+      You should enable "add recovery record".
+
+      If a damaged archive does not contain a recovery record or if the
+      archive is too damaged to restore it, ACE will scan for files in the
+      archive. Because it is unlikely that the whole archive will be
+      recovered by this, corrupted files are likely to be produced during
+      extraction.
+
+
+  12. Authenticity verification
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      This feature is available in the registered version only. By
+      registering ACE you are able to provide archives with your personal
+      sign. You must add authenticity verification when distributing an
+      ACE-archive in a commercial setting.
+      AV does not only provide users with background information on the
+      archive, it may also contain a copyright message for its contents.
+
+      See chapter 18. Registration for information how to register ACE and
+      to get an authenticity verification-string.
+
+
+  13. The SFX-modules/UNACE
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      A self-extracting archive contains a small executable, called
+      SFX-module. This makes extraction without an extra program possible.
+      ACE provides SFX-modules for several operating systems.
+
+      Since UNACE and the senior SFX-module are almost the same they have
+      the same possibilities.
+
+      The SFX-modules do not expect any parameters. But optionally you
+      can specify a destination to extract the files to. They will extract
+      all files the self-extracting archive contains.
+
+      Usage: <SFX-archive> [destination directory]
+
+      UNACE handles all files, too. The only parameters UNACE expects is the
+      command and an archive:
+
+      Usage: UNACE <command> <archive> [destination directory]
+
+        where <command> is one of:
+
+          e   Extract files
+          l   List archive
+          t   Test archive integrity
+          v   List archive (verbose)
+          x   Extract files with full path
+
+      ACE is significantly faster than UNACE or the SFX-modules in
+      decompressing large archives.
+
+
+  14. Support of non-ACE archives
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Using the user interface of ACE you can enter RAR, ZIP and ARJ archives.
+      You may use Extr(F2), Copy(extraction), View, Test, Delete, Repair and 
+      MkACE(Alt+F2) on these archives. MKACE generates a copy of these 
+      archives in ACE format, the originals will be kept.
+
+      ACE uses the most popular programs to realize these operations.
+      These are:
+        RAR  -  RAR.EXE
+        ZIP  -  PKZIP.EXE    (TEST)
+                PKUNZIP.EXE  (COPY=extraction)
+                PKZIPFIX.EXE (REPAIR)
+        ARJ  -  ARJ.EXE
+
+      These programs have to be in the same directory as ACE or the direc-
+      tories have to be declared in the AUTOEXEC.BAT file in the
+      PATH-variable.
+
+      The author of ACE recommends you use the latest versions of the other
+      archivers when using ACE archives on non-ACE archives.
+
+
+  15. Support of long file names (LFNs)
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ACE can read long file names (LFNs) when ran under Windows 95 or
+      Windows 98 only (not under pure DOS 7.00 nor Windows NT).
+      It will display those names in the shell.
+      You can adjust the list boundary between the file names and filesizes
+      to watch the longer names.
+      ACE will also store those LFNs in archives. You should be careful
+      when doing so. If you aim to extract files not under Windows 95
+      the file names will have to be converted at extraction.
+      This conversion is done by all programs send along with this package:
+      ACE, UNACE, and SFX-modules.
+
+
+  16. Language
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Up from ACE 1.1a there are message files, named *.MSG. Those files
+      contain messages of a certain language. The actual used message file
+      is ACE.MSG (must be in the ACE.EXE directory). If there is no ACE.MSG,
+      it can not be read, or is damaged, ACE will use English as default.
+      Commandline UnACE now also makes use of the message files!
+
+      You can choose the language in the shell by pressings F9 for options
+      and pushing "Language settings".
+
+      If you are interested in translating commandline ACE, please contact me!
+      I will send you all the files neccassary for this task then. Thanks!
+      (my email address: mlemke@winace.com)
+
+
+  17. Disclaimer
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ACE Compression Software, creator of the ACE archiver, disclaims any
+      liability for any damage caused by using or misusing this software.
+      You use the programs included in an ACE package at your own risk.
+      The author cannot be held responsible for data loss or other damages
+      and any consequences from this loss or damages.
+
+
+  18. Registration
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ACE is shareware. After 30 days you will have to register the
+      program if you like to continue to use ACE.
+
+      Distributed archives might be checked whether created with a registered 
+      version of ACE or not. Take care!
+
+      The unregistered ACE package may be freely distributed. The unauthorized
+      distribution of a registered ACE package or a part thereof is prohibit-
+      ten. Free distribution means that the distributor has to charge no fee 
+      for the ACE package (cost of sales excluded) and it has to be indicated
+      that the ACE package is unregistered shareware.
+
+      To become a registered user of ACE you have to think about a string you
+      wish to use for your AV (see 12. Authenticiry verification).
+      Fill out the registration form (REGISTER.FRM, REGISTER.DE for Germany),
+      include money or cheque, bank account number and signature and send
+      it to the address listed on the form.
+
+      The licence you get is not transferable to a third party.
+      To use ACE on more than one CPU, see the LICENCE.TXT file.
+
+      Read the file LICENCE.TXT for more information about registration and
+      distribution.
+
+
+  19. Contact, support, information, latest files, ACE-sources
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Registered users may contact the e-merge GmbH to get technical support:
+
+        Phone: +49 (0)251 43000
+        Fax  : +49 (0)251 43052
+
+       or via email:
+
+        support@winace.com
+
+
+      For comments or to report bugs send email to:
+
+        mlemke@winace.com
+
+
+     For stuff like the UnAceV2.Dll, shareware compression library, links
+      and other information on ACE take a look at:
+
+          http://www.winace.com
+
+
+      The latest version of ACE is available at:
+
+        web sites:
+
+          http://www.winace.com
+
+
+        FTP:
+
+          ftp.elf.stuba.sk  /pub/pc/pack
+          ftp.kiae.su       /msdos/arcers
+          ftp.simtel.net    /pub/simtelnet/msdos/arcers
+          ftp.coast.net     /SimTel/msdos/archiver
+          garbo.uwasa.fi    /pc/arcers
+
+          Mirror sites of ELF.STUBA.SK
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+          ftp.it.net.au         /mirrors/sac/pack                 (Australia)
+          sunsite.univie.ac.at  /pub/compression/ftp.elf.stuba.sk (Austria)
+          ftp.vse.cz            /pub/msdos/SAC/pc/pack            (Czech)
+          ftp.cs.tu-berlin.de   /pub/msdos/mirrors/stuba/pc/pack  (Germany)
+          ftp-beer.bke.hu       /vol1/pub/sac/pc/pack             (Hungary)
+          cert.unisa.it         /pub/PC/SAC/pack                  (Italy)
+          ftp.pwr.wroc.pl       /pub/pc/sac/pack                  (Poland)
+          ftp.nsysu.edu.tw      /PC/SAC/pack                      (Taiwan)
+
+
+  20. Thanks
+ ÄÄÄÄÄÄÄÄÄÄÄÄ
+      I would like to thank all the people who help(ed) me to push up ACE.
+      This means all the beta-testers and the people helping me to
+      distribute ACE as well as giving support.
+
+      Some of these people are:
+
+        Daniel Pantke
+        Marc Beckersjuergen
+        Szymon Grabowski
+        Harald Feldmann
+        Juergen Peters
+
+
+  21. Comment
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      Please help me to improve ACE. This means not only registering!
+      Send me comments, questions and suggestions.
+
+
+  22. Glossary: trademarks/terms
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      There are some names of programs/trademarks mentioned in this document:
+      MS-DOS, WINDOWS 3.xx, Windows, RAR, ZIP, ARJ, LHA, PKZIP, PKUNZIP,
+      PKZIPFIX, PMODE/W, QEMM v8.03.
+      They are acknowledged and belong to their respective owners.
+
+
+      Explanation of some terms:
+
+      AV          -  Authenticity Verification;
+                  consists of a string and some checksums;
+                  serves as proof that the archive is original and states
+                  who created it;
+                  see 12. Authenticity verification
+
+      CRC         -  Cyclic Redundancy Check;
+                  a mathematical method used to validate extracted data
+
+      Dictionary  -  filedata buffer;
+                  used in the compression algorithm; serves for finding
+                  matches in the already compressed data
+
+      EMS/XMS     -  generally regarded as memory above the first 1Mb;
+                  is managed by an EMM (EMM386.EXE) or a XMM (HIMEM.SYS);
+                  see the manual of your DOS for more information how to
+                  install an EMM or XMM
+
+      SFX         -  SelF eXtracting
+                  describes archives in EXEcutable file format which;
+                  can extract the archived data by itself
+
+      Solid       -  method to improve compression;
+                  all files are compressed as one data stream
+
+      Volume      -  part of multi-volume archive;
+                  large archives can be stored on several disks by splitting
+                  them into volumes

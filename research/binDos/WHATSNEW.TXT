@@ -1,0 +1,112 @@
+
+    Modifications made to commandline ACE archiver
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+     Intention
+    ÄÄÄÄÄÄÄÄÄÄÄ
+      This file is to show inventions, bugfixes and other improvements I
+      make to ACE. This also helps to get to know about reasons of bugs.
+
+
+     Meaning of the symbols
+    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      $ modified
+      + new
+      - removed
+      ! bugfixed
+
+
+     History of changes
+    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+      version ACE v2.6
+
+        ! some smaller things
+
+
+      version ACE v2.1
+
+        + stores/restores NTFS security information
+
+        + archives NTFS alternative data streams
+
+        + stores/restores NTFS-compressed attribute now
+
+
+      version ACE v2.04, v2.03
+
+        ! some smaller things
+
+
+      version ACE v2.02
+
+        ! on NT 4.0, key files were not found if ACE32.EXE was started from
+          a searching path
+
+        ! if no files were specified, only the first file at multivolumes
+          was extracted
+
+        ! use of '-r' crashed ACE.EXE (DOS-version)
+
+
+      version ACE v2.0á3
+
+        + new recovery record technique for more safety
+          (v2.0 archives only)
+
+        + recovery operation improved
+
+        ! SFX asks for new destination directory now if 'No' is
+          chosen at the request "Extract to current directory?"
+
+        + SFX module selection at Archive options|Make to SFX
+
+        ! '-sfx' switch did not work at 's' command
+
+        ! encryption, view in archives
+
+        $ registration (new keys available at wwww.winace.com)
+
+
+      version ACE v2.0á2
+
+        + new languages (some still in work)
+
+        + 'to'-switch for setting the time-out limit
+
+        ! several things..
+
+
+      version ACE v2.0á1
+
+        + more options can be set at the archive creation dialog now
+
+        + '-fp' switch: save full path
+          '-fpd' switch: save full path with drive
+
+        + UnAce now also uses the message file set by ACE
+
+        + language selection within the shell
+          (copies <ace-dir>\MSGFILES\*.MSG to <ace-dir>\ACE.MSG)
+
+        $ sfxjr, sfxsr removed; added support for *.SFX files instead
+          currently there are 3 commandline SFX files available
+          - for OS2, Win32 and DOS
+          '-sfx' switch adds the DOS SFX (supports LFN) as default;
+          use '-sfx<file>' to specify a certain module
+
+        + support for files and archives larger than 4Gb
+          (up to 16 exa bytes)
+
+        + improved compression performance
+          (much better compression at same speed)
+
+        + faster creation of file lists before archive operations
+
+        + '-c2[d/e/p/s][-]' switch for new v2.0 compression techniques
+
+        + v2.0 compression techniques
+          (specialized on images, sound, executables and others)
+          to cut out other archivers

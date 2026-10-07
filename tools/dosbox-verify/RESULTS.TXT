@@ -1,0 +1,307 @@
+===== ACE 2.6 DOS verification =====
+Host-authored archives are decoded here.
+
+===== STORE.ACE =====
+
+
+------------- 09/02/26 19:59:11   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std STORE.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\STORE.ACE                            
+Contents of archive STORE.ACE                              
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld  100%  HELLO.TXT                    
+                                                           
+listed: 1 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:12   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std STORE.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\STORE.ACE                            
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing HELLO.TXT                                        CRC OK
+                                                           
+tested: 1 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== LZ77.ACE =====
+
+
+------------- 09/02/26 19:59:13   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std LZ77.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\LZ77.ACE                             
+Contents of archive LZ77.ACE                               
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld   56%  HELLO.TXT                    
+02.10.26 15:58   ld ld   41%  NOTES.TXT                    
+                                                           
+listed: 2 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:13   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std LZ77.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\LZ77.ACE                             
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing HELLO.TXT                                        CRC OK
+  testing NOTES.TXT                                        CRC OK
+                                                           
+tested: 2 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== BLOCKED.ACE =====
+
+
+------------- 09/02/26 19:59:14   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std BLOCKED.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\BLOCKED.ACE                          
+Contents of archive BLOCKED.ACE                            
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld   56%  HELLO.TXT                    
+02.10.26 15:58   ld ld   41%  NOTES.TXT                    
+02.10.26 15:58   ld ld    3%  DATA.BIN                     
+                                                           
+listed: 3 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:15   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std BLOCKED.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\BLOCKED.ACE                          
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing HELLO.TXT                                        CRC OK
+  testing NOTES.TXT                                        CRC OK
+  testing DATA.BIN                                         CRC OK
+                                                           
+tested: 3 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== SOLID.ACE =====
+
+
+------------- 09/02/26 19:59:16   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std SOLID.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\SOLID.ACE                            
+Contents of archive SOLID.ACE                              
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld   56%  HELLO.TXT                    
+02.10.26 15:58   ld ld   41%  NOTES.TXT                    
+                                                           
+listed: 2 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:17   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std SOLID.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\SOLID.ACE                            
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing HELLO.TXT                                        CRC OK
+  testing NOTES.TXT                                        CRC OK
+                                                           
+tested: 2 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== DELTA.ACE =====
+
+
+------------- 09/02/26 19:59:18   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std DELTA.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\DELTA.ACE                            
+Contents of archive DELTA.ACE                              
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld   13%  DATA.BIN                     
+                                                           
+listed: 1 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:19   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std DELTA.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\DELTA.ACE                            
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing DATA.BIN                                         CRC OK
+                                                           
+tested: 1 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== EXE.ACE =====
+
+
+------------- 09/02/26 19:59:20   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std EXE.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\EXE.ACE                              
+Contents of archive EXE.ACE                                
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld  102%  PROBE.BIN                    
+                                                           
+listed: 1 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:20   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std EXE.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\EXE.ACE                              
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing PROBE.BIN                                        CRC OK
+                                                           
+tested: 1 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== PIC.ACE =====
+
+
+------------- 09/02/26 19:59:21   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std PIC.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\PIC.ACE                              
+Contents of archive PIC.ACE                                
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld   44%  PIXELS.BIN                   
+                                                           
+listed: 1 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:22   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std PIC.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\PIC.ACE                              
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+  testing PIXELS.BIN                                       CRC OK
+                                                           
+tested: 1 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== CM.ACE =====
+
+
+------------- 09/02/26 19:59:23   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std CM.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\CM.ACE                               
+Main comment                                               
+MAIN COMMENT FROM LINUX mkace
+Contents of archive CM.ACE                                 
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld   41%  NOTES.TXT                    
+                                                           
+listed: 1 files, totaling ld bytes (compressed ld)         L_rc=
+
+
+------------- 09/02/26 19:59:24   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std CM.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\CM.ACE                               
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+Main comment                                               
+MAIN COMMENT FROM LINUX mkace
+  testing NOTES.TXT                                        CRC OK
+                                                           
+tested: 1 files, totaling ld bytes (compressed ld)         T_rc=
+
+===== create an archive from within DOS =====
+
+
+------------- 09/02/26 19:59:24   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE A -y -std -s- -m3 DOSMADE.ACE CHECK.TXT
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+creating archive C:\DOSMADE.ACE                            
+Working: Creating listfile. Please wait.                   
+  adding CHECK.TXT                                         
+  creating temporary archive                               
+    copying C:\DOSMADE.ACE to C:\$$$ACE0.TMP               
+    copying C:\$$$ACE0.TMP to C:\DOSMADE.ACE               
+                                                           
+added: 1 files, totaling ld bytes (compressed ld)          
+
+------------- 09/02/26 19:59:25   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE T -y -std DOSMADE.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\DOSMADE.ACE                          
+Working: Creating listfile. Please wait.                   
+Working: Reading archive. Please wait.                     
+created on 2.10.2026 with ver 2.0 by                       
+*UNREGISTERED VERSION*                                     
+  testing CHECK.TXT                                        CRC OK
+                                                           
+tested: 1 files, totaling ld bytes (compressed ld)         DOSMADE_T_rc=
+
+Done. On the host run: sh tools/check_dosbox_verify.sh
+(it decodes DOSMADE.ACE with our ace as reverse check)
+Verification complete.

@@ -1,0 +1,16 @@
+
+
+------------- 09/07/26 03:21:41   ACE 2.6   Aug 05 2005  17:36:20 -------------
+ command line: C:\ACE.EXE L -y -std STORE.ACE
+
+ACE v2.6      Copyright by ACE Compression Software       Aug 05 2005  17:36:19
+!!You MUST REGISTER after a 30 days test period. Please read ORDER\ORDER.TXT!!!
+                                                           
+processing archive C:\STORE.ACE                            
+Contents of archive STORE.ACE                              
+                                                           
+Date    ³Time ³Packed     ³Size     ³Ratio³File            
+                                                           
+02.10.26 15:58   ld ld  100%  HELLO.TXT                    
+                                                           
+listed: 1 files, totaling ld bytes (compressed ld)         

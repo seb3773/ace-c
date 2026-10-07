@@ -1,0 +1,59 @@
+                             Copyright by ACE Compression Software, August 2005
+
+  Licence conditions of the commandline ACE v2.6 archiver
+ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+      An ACE package includes these files as a minumum:
+      
+       ACE.EXE, ACE32.EXE, ACE2.EXE, UNACE.EXE, UNACE32.EXE, UNACE2.EXE,
+       ACE.TXT, LICENCE.DOC, ORDER.TXT, and ORDER.FRM
+
+      The term "ACE" refers to those packages. ACE v2.6 refers to all ACE 
+      packages where version 2.6 of these files are included. Original ACE 
+      packages are arranged by ACE Compression Software or directly
+      authorized distributors only.
+
+
+        1. The author does not accept any liability for loss of data, time,
+           business or private information or other damages of any kind,
+           whether direct or consequential arising out of the use or inability
+           to use the ACE package or any part thereof.
+
+
+        2. All copyrights holded by ACE Compression Software,
+           the creator of the ACE archiver.
+
+
+        3. Personal use does require registration as well as commercial use
+           does. You are not allowed to distribute archives created with an
+           unregistered ACE in any way.
+
+
+        4. If you want to continue to use ACE after the test period of 30 days
+           you must register. 
+
+
+        5. By registering you get the right to use the registered version
+           only. The key you get by registration will work until the key 
+           system is changed. A small update fee might be charged for
+           an update then. The number of copies of a registered ACE package
+           is limited by the licence you got by registration.
+
+
+        6. No registered ACE is to be transfered to a third party.
+
+
+        7. Only unchanged original unregistered ACE packages are to be
+           distributed. No fee is to be charged for distribution or it has
+           to be indicated that it is unregistered shareware. The indication
+           means that this shareware has to be registered after 30 days.
+
+
+        8. You are not allowed to sell ACE packages or to modify files of them,
+           to reverse engineer or to disassamble executables of ACE.
+
+
+        9. If you do not accept these terms you are not permitted to use ACE.
+
+
+      ACE Compression Software, creator of the archiver ACE

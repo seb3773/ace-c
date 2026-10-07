@@ -1,0 +1,32 @@
+컴� commandline archiver ACEv2.6  컴컴
+(operating systems: DOS/Win32/OS2)
+Copyright ACE Compression Software
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+Features: * fast extraction, updates
+ * special multimedia&exe compression
+ * good compression ratio, high speed
+ * LFN-support, different languages
+ * user interface with two directories
+ * multi-volume and SFX archives
+ * encryption,recovery records,coments
+ * req.: 386/2Mb
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+Date:  5th August 2005
+Price: $29 (single license)
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+This ACE package contains these files:
+ * Ace.exe      - the archiver for DOS
+ * Ace32.exe    - the archiver for
+                        Windows 95/NT
+ * Ace2.exe     - archiver for OS/2
+ * UnAce.exe, UnAce32.exe, UnAce2.exe
+   - small programs for decompression
+ * Ace.txt      - description of ACE
+ * Licence.txt  - license information
+ * Order.frm    - order form
+ * Order.txt    - how to order ACE
+ * File_Id.diz  - this file
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+BE AWARE:
+   ACE.EXE doesn't run with 16BIT DPMI
+   (read ace.txt for more information)
