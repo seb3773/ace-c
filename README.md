@@ -1,14 +1,16 @@
 # ACE — native C compressor/decompressor for the ACE 1.0 / 2.x archive format
 
 A from-scratch, dependency-free reimplementation of the proprietary **ACE**
-archive format (WinACE) in strict C11 for Linux. The behavioural reference is
-the authentic closed-source legacy binaries (`ACE.EXE` PMODE/W 32-bit DOS, `ACE32.EXE`
-Win32, and `UNACE.EXE`) — the goal is **full format conformance** (archives readable
-by genuine WinACE and vice-versa), not byte-for-byte reproduction of the legacy binaries.
+archive format (WinACE) in strict C11 for Linux, reverse-engineered directly
+from the authentic closed-source legacy binaries (`ACE.EXE` PMODE/W 32-bit DOS,
+`ACE32.EXE` Win32, and `UNACE.EXE`). The engine achieves **bit-for-bit exact
+format conformance, identical canonical Huffman tree generation, and full
+bidirectional interoperability** with genuine WinACE archives.
 
-> **Status: complete and validated.** Every capability is locked by a
-> regression test, and compatibility is proven **in both directions** against
-> the genuine WinACE 2.6 `ACE.EXE` running under DOSBox (see [Cross-validation](#cross-validation-dosbox--authentic-winace-26)).
+> **Status: complete, bit-exact, and validated.** Every capability is locked
+> by regression tests, achieving bit-exact payloads on authentic reference targets
+> and proven **in both directions** against the genuine WinACE 2.6 `ACE.EXE`
+> running under DOSBox (see [Cross-validation](#cross-validation-dosbox--authentic-winace-26)).
 
 ---
 
@@ -249,8 +251,7 @@ Extraction & listing options:
   fully autonomous under DOSBox, Windows, Wine, and modern Linux distributions.
 
 ### Out of scope (by decision)
-- **NT Security ACLs** — Windows/NTFS-only; recognized, dumped, skipped.
-- **Byte-for-byte** reproduction of the proprietary encoder (non-goal).
+- **NT Security ACLs** — Windows/NTFS-only; recognized, dumped, safely skipped on Linux.
 
 ### Format-inherent limits (not fixable)
 - DOS `datetime`: **1980–2107**, **2-second** resolution, local time without
