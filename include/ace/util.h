@@ -79,6 +79,17 @@ int ace_is_safe_relpath(const char *path);
 void ace_normalize_path_separators(char *path);
 void ace_format_unix_path(const char *src, char *dst, size_t dst_sz);
 int ace_sanitize_path(const uint8_t *raw, size_t raw_len, char *out, size_t out_sz);
+int ace_wildcard_match(const char *pattern, const char *string, int case_fold);
+
+#ifdef _WIN32
+  #include <sys/stat.h>
+  #define ace_stat_t struct _stat64
+  #define ace_stat(path, st) _stat64(path, st)
+#else
+  #include <sys/stat.h>
+  #define ace_stat_t struct stat
+  #define ace_stat(path, st) stat(path, st)
+#endif
 
 #ifdef __cplusplus
 }

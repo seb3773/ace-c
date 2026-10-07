@@ -104,14 +104,18 @@ The unified binary embeds authentic 32-bit DOS PMODE/W, Win32 Console, and Win32
 ## Build
 
 ```sh
-make            # produces ./ace
-make test       # full regression suite (see below)
+make            # builds build/linux/ace (and build/win64/ace.exe if mingw is available)
+make linux      # builds build/linux/ace and convenience root symlink ./ace
+make win64      # builds standalone static build/win64/ace.exe (via x86_64-w64-mingw32-gcc)
+make test       # full Linux regression suite (see below)
+make test-win64 # runtime test of win64 binary under Wine
 make clean
 ```
 
 Strict C11 (`gcc -std=c11 -Wall -Wextra -Wmissing-prototypes -O2 -g`).
-**No dependencies beyond standard libc / POSIX.** Python 3 is needed only for running
-the regression test harness.
+**Zero third-party dependencies.** Binaries are placed into dedicated target directories:
+- `build/linux/ace`: native Linux x86_64 executable (with root `./ace` symlink).
+- `build/win64/ace.exe`: fully autonomous, statically linked 64-bit Windows PE executable (imports only `KERNEL32.DLL` and `MSVCRT.DLL`, requiring no runtime GCC DLLs).
 
 > **Portability note:** Strict C11 with GCC 14 treats implicit declarations as
 > errors; POSIX APIs are enabled via explicit feature-test macros (`_DEFAULT_SOURCE`)

@@ -9,7 +9,6 @@
 #include "ace/util.h"
 
 #include <dirent.h>
-#include <fnmatch.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +17,16 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#ifndef strcasecmp
+#define strcasecmp _stricmp
+#endif
+#ifndef strncasecmp
+#define strncasecmp _strnicmp
+#endif
+#endif
 
 /* Exclusion list structure and helpers for -x / -x@list */
 typedef struct {
@@ -96,11 +105,11 @@ static int is_excluded(const exclude_list_t *el, const char *path, const char *s
     for (i = 0; i < el->count; i++) {
         const char *pat = el->patterns[i];
         size_t plen = strlen(pat);
-        if (fnmatch(pat, path, FNM_CASEFOLD) == 0 ||
-            fnmatch(pat, norm_path, FNM_CASEFOLD) == 0 ||
-            fnmatch(pat, stored, FNM_CASEFOLD) == 0 ||
-            fnmatch(pat, b_path, FNM_CASEFOLD) == 0 ||
-            fnmatch(pat, b_stored, FNM_CASEFOLD) == 0)
+        if (ace_wildcard_match(pat, path, 1) ||
+            ace_wildcard_match(pat, norm_path, 1) ||
+            ace_wildcard_match(pat, stored, 1) ||
+            ace_wildcard_match(pat, b_path, 1) ||
+            ace_wildcard_match(pat, b_stored, 1))
             return 1;
         if (plen > 0 && (pat[plen - 1] == '/' || pat[plen - 1] == '\\')) {
             if (strncasecmp(norm_path, pat, plen) == 0 ||
@@ -155,6 +164,23 @@ static uint32_t dos_attrs(mode_t m)
         a |= ACE_ATTR_READONLY;
     return a;
 }
+
+#ifdef _WIN32
+static uint32_t dos_attrs_path(const char *path, mode_t m)
+{
+    DWORD dw = GetFileAttributesA(path);
+    if (dw != INVALID_FILE_ATTRIBUTES) {
+        uint32_t a = 0;
+        if (dw & FILE_ATTRIBUTE_READONLY)  a |= ACE_ATTR_READONLY;
+        if (dw & FILE_ATTRIBUTE_HIDDEN)    a |= ACE_ATTR_HIDDEN;
+        if (dw & FILE_ATTRIBUTE_SYSTEM)    a |= ACE_ATTR_SYSTEM;
+        if (dw & FILE_ATTRIBUTE_DIRECTORY) a |= ACE_ATTR_DIRECTORY;
+        if (dw & FILE_ATTRIBUTE_ARCHIVE)   a |= ACE_ATTR_ARCHIVE;
+        return a;
+    }
+    return dos_attrs(m);
+}
+#endif
 
 static int write_header(FILE *fp, const uint8_t *payload, uint16_t n)
 {
@@ -552,7 +578,7 @@ static int archive_file(volw_t *w, const job_t *j, const char *diskpath,
     uint8_t compqual = ACE_QUAL_NONE;
     uint16_t fparams = 0;
     uint16_t hflags;
-    struct stat st;
+    ace_stat_t st;
     int rc;
 
     in = fopen(diskpath, "rb");
@@ -629,9 +655,13 @@ static int archive_file(volw_t *w, const job_t *j, const char *diskpath,
         payload = eb;
         packsize = padded;
     }
-    if (stat(diskpath, &st) == 0) {
+    if (ace_stat(diskpath, &st) == 0) {
         dt = dos_from_time(st.st_mtime);
+#ifdef _WIN32
+        attr = dos_attrs_path(diskpath, st.st_mode);
+#else
         attr = dos_attrs(st.st_mode);
+#endif
     }
     hflags = ACE_FLAG_ADDSIZE;
     if (j->solid)
@@ -655,12 +685,16 @@ static int archive_file(volw_t *w, const job_t *j, const char *diskpath,
 static int archive_dir(volw_t *w, const job_t *j, const char *diskpath,
                        const char *name, size_t namelen)
 {
-    struct stat st;
+    ace_stat_t st;
     uint32_t dt = 0, attr = ACE_ATTR_DIRECTORY;
     (void)j;
-    if (stat(diskpath, &st) == 0) {
+    if (ace_stat(diskpath, &st) == 0) {
         dt = dos_from_time(st.st_mtime);
+#ifdef _WIN32
+        attr = dos_attrs_path(diskpath, st.st_mode);
+#else
         attr = dos_attrs(st.st_mode);
+#endif
     }
     attr |= ACE_ATTR_DIRECTORY;
     return emit_entry(w, ACE_FLAG_ADDSIZE, NULL, 0, 0, dt, attr, 0,
@@ -689,7 +723,7 @@ static int walk_dir(volw_t *w, const job_t *j, const char *dirpath,
     while ((de = readdir(d)) != NULL) {
         char childpath[4096];
         char childname[4096];
-        struct stat cs;
+        ace_stat_t cs;
         int cn;
         if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
             continue;
@@ -700,7 +734,7 @@ static int walk_dir(volw_t *w, const job_t *j, const char *dirpath,
             continue;
         if (is_excluded(j->excludes, childpath, childname))
             continue;
-        if (stat(childpath, &cs) != 0)
+        if (ace_stat(childpath, &cs) != 0)
             continue;
         if (S_ISDIR(cs.st_mode)) {
             rc = walk_dir(w, j, childpath, childname, (size_t)cn);
@@ -720,11 +754,11 @@ static int walk_dir(volw_t *w, const job_t *j, const char *dirpath,
  * regular file is archived directly. */
 static int add_input(volw_t *w, const job_t *j, const char *arg)
 {
-    struct stat st;
+    ace_stat_t st;
     char name[4096];
     size_t nlen;
 
-    if (stat(arg, &st) != 0) {
+    if (ace_stat(arg, &st) != 0) {
         perror(arg);
         return ACE_ERR_IO;
     }
@@ -914,19 +948,19 @@ int mkace_main(int argc, char **argv)
                     sfx_type = t;
                     i++;
                 } else {
-                    sfx_type = ACE_SFX_DOS;
+                    sfx_type = ACE_SFX_DEFAULT_TYPE;
                 }
             } else {
-                sfx_type = ACE_SFX_DOS;
+                sfx_type = ACE_SFX_DEFAULT_TYPE;
             }
         } else if (strncmp(argv[i], "-sfx=", 5) == 0) {
             sfx_type = ace_sfx_parse_type(argv[i] + 5);
             if (sfx_type == ACE_SFX_NONE)
-                sfx_type = ACE_SFX_DOS;
+                sfx_type = ACE_SFX_DEFAULT_TYPE;
         } else if (strncmp(argv[i], "-sfx", 4) == 0 && argv[i][4] != '\0') {
             sfx_type = ace_sfx_parse_type(argv[i] + 4);
             if (sfx_type == ACE_SFX_NONE)
-                sfx_type = ACE_SFX_DOS;
+                sfx_type = ACE_SFX_DEFAULT_TYPE;
         } else if (argv[i][0] == '-') {
             usage(argv[0]);
             exclude_free(&excludes);

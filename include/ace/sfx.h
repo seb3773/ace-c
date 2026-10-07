@@ -13,11 +13,17 @@ extern "C" {
 
 typedef enum {
     ACE_SFX_NONE = 0,
-    ACE_SFX_DOS,        /* Authentic 32-bit DOS PMODE/W stub (default) */
+    ACE_SFX_DOS,        /* Authentic 32-bit DOS PMODE/W stub (default on non-Windows) */
     ACE_SFX_WIN32_CL,   /* Authentic 32-bit Win32 Console PE stub */
     ACE_SFX_WIN32_GUI,  /* Authentic 32-bit Win32 GUI PE stub */
     ACE_SFX_LINUX       /* Native 64-bit Linux ELF standalone extractor stub */
 } ace_sfx_type_t;
+
+#ifdef _WIN32
+  #define ACE_SFX_DEFAULT_TYPE ACE_SFX_WIN32_GUI
+#else
+  #define ACE_SFX_DEFAULT_TYPE ACE_SFX_DOS
+#endif
 
 /**
  * Returns the embedded SFX stub binary buffer and its byte size.

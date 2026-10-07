@@ -13343,7 +13343,7 @@ int ace_sfx_convert_archive(const char *in_path, const char *out_path, ace_sfx_t
     if (!in_path)
         return ACE_ERR_PARAM;
     if (type == ACE_SFX_NONE)
-        type = ACE_SFX_DOS;
+        type = ACE_SFX_DEFAULT_TYPE;
 
     stub = ace_sfx_get_stub(type, &stub_sz);
     if (!stub || stub_sz == 0)

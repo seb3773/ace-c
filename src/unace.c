@@ -3,7 +3,6 @@
 #include "ace/oem.h"
 #include "ace/util.h"
 
-#include <fnmatch.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,11 +32,11 @@ static void usage(const char *argv0)
 static int member_matches(const char *pattern, const char *name)
 {
     const char *base;
-    if (fnmatch(pattern, name, FNM_CASEFOLD) == 0)
+    if (ace_wildcard_match(pattern, name, 1))
         return 1;
     base = strrchr(name, '/');
     base = base ? base + 1 : name;
-    if (base != name && fnmatch(pattern, base, FNM_CASEFOLD) == 0)
+    if (base != name && ace_wildcard_match(pattern, base, 1))
         return 1;
     return 0;
 }

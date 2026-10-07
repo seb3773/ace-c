@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 
 const char *ace_strerror(int err)
 {
@@ -51,15 +54,26 @@ int ace_mkdir_p(const char *path)
         return ACE_ERR_PARAM;
     memcpy(tmp, path, len + 1);
     for (i = 1; i < len; i++) {
-        if (tmp[i] == '/') {
+        if (tmp[i] == '/' || tmp[i] == '\\') {
+            char sep = tmp[i];
             tmp[i] = 0;
+#ifdef _WIN32
+            if (_mkdir(tmp) != 0 && errno != EEXIST)
+                return ACE_ERR_IO;
+#else
             if (mkdir(tmp, 0755) != 0 && errno != EEXIST)
                 return ACE_ERR_IO;
-            tmp[i] = '/';
+#endif
+            tmp[i] = sep;
         }
     }
+#ifdef _WIN32
+    if (_mkdir(tmp) != 0 && errno != EEXIST)
+        return ACE_ERR_IO;
+#else
     if (mkdir(tmp, 0755) != 0 && errno != EEXIST)
         return ACE_ERR_IO;
+#endif
     return ACE_OK;
 }
 
@@ -199,4 +213,42 @@ int ace_sanitize_path(const uint8_t *raw, size_t raw_len, char *out, size_t out_
     }
     out[out_i] = 0;
     return ACE_OK;
+}
+
+int ace_wildcard_match(const char *pattern, const char *string, int case_fold)
+{
+    if (!pattern || !string)
+        return 0;
+
+    while (*pattern) {
+        if (*pattern == '*') {
+            while (*(pattern + 1) == '*')
+                pattern++;
+            if (*(pattern + 1) == '\0')
+                return 1;
+            while (*string) {
+                if (ace_wildcard_match(pattern + 1, string, case_fold))
+                    return 1;
+                string++;
+            }
+            return ace_wildcard_match(pattern + 1, string, case_fold);
+        } else if (*pattern == '?') {
+            if (*string == '\0')
+                return 0;
+            pattern++;
+            string++;
+        } else {
+            char p = *pattern;
+            char s = *string;
+            if (case_fold) {
+                p = (char)tolower((unsigned char)p);
+                s = (char)tolower((unsigned char)s);
+            }
+            if (p != s)
+                return 0;
+            pattern++;
+            string++;
+        }
+    }
+    return *string == '\0';
 }

@@ -8,6 +8,7 @@ __pycache__/
 /unace
 tests/test_core
 testdata/_*
+testdata/real_corpus/
 
 # Work & scratch directories
 _work/

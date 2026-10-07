@@ -9,6 +9,10 @@
 #include <time.h>
 #include <unistd.h>
 #include <utime.h>
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 static const char *host_names[] = {
     "MS-DOS", "OS/2", "Win32", "Unix", "Mac OS", "Win NT", "Primos",
@@ -1028,17 +1032,27 @@ static void apply_restore(const char *path, uint32_t datetime, uint32_t attribs,
 {
     time_t t;
     struct utimbuf ut;
-    mode_t mode;
 
     if (dos_to_timet(datetime, &t) == ACE_OK) {
         ut.actime = t;
         ut.modtime = t;
         utime(path, &ut);
     }
-    mode = isdir ? 0755 : 0644;
+#ifdef _WIN32
+    DWORD win_attr = 0;
+    if (attribs & ACE_ATTR_READONLY)  win_attr |= FILE_ATTRIBUTE_READONLY;
+    if (attribs & ACE_ATTR_HIDDEN)    win_attr |= FILE_ATTRIBUTE_HIDDEN;
+    if (attribs & ACE_ATTR_SYSTEM)    win_attr |= FILE_ATTRIBUTE_SYSTEM;
+    if (attribs & ACE_ATTR_ARCHIVE)   win_attr |= FILE_ATTRIBUTE_ARCHIVE;
+    if (win_attr != 0)
+        SetFileAttributesA(path, win_attr);
+    (void)isdir;
+#else
+    mode_t mode = isdir ? 0755 : 0644;
     if (attribs & ACE_ATTR_READONLY)
         mode &= ~(S_IWUSR | S_IWGRP | S_IWOTH);
     chmod(path, mode);
+#endif
 }
 
 int ace_archive_extract_to_path(ace_archive_t *ar, size_t idx, const char *basedir,

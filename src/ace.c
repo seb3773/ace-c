@@ -173,7 +173,7 @@ static int dispatch_sfx(int argc, char **argv)
 {
     const char *in_path = NULL;
     const char *out_path = NULL;
-    ace_sfx_type_t type = ACE_SFX_DOS;
+    ace_sfx_type_t type = ACE_SFX_DEFAULT_TYPE;
     int i;
 
     for (i = 2; i < argc; i++) {
@@ -186,19 +186,19 @@ static int dispatch_sfx(int argc, char **argv)
                     type = t;
                     i++;
                 } else {
-                    type = ACE_SFX_DOS;
+                    type = ACE_SFX_DEFAULT_TYPE;
                 }
             } else {
-                type = ACE_SFX_DOS;
+                type = ACE_SFX_DEFAULT_TYPE;
             }
         } else if (strncmp(argv[i], "-sfx=", 5) == 0) {
             type = ace_sfx_parse_type(argv[i] + 5);
             if (type == ACE_SFX_NONE)
-                type = ACE_SFX_DOS;
+                type = ACE_SFX_DEFAULT_TYPE;
         } else if (strncmp(argv[i], "-sfx", 4) == 0 && argv[i][4] != '\0') {
             type = ace_sfx_parse_type(argv[i] + 4);
             if (type == ACE_SFX_NONE)
-                type = ACE_SFX_DOS;
+                type = ACE_SFX_DEFAULT_TYPE;
         } else if (argv[i][0] == '-') {
             fprintf(stderr, "ace: unknown option '%s' for 's' command\n", argv[i]);
             return 2;
