@@ -23,6 +23,7 @@
 static void usage(const char *argv0)
 {
     fprintf(stderr,
+            "%s"
             "Usage: %s COMMAND [OPTIONS] ARCHIVE [FILES... / PATTERNS...]\n\n"
             "Commands:\n"
             "  a ARCHIVE [opts] FILE...  create archive\n"
@@ -45,7 +46,7 @@ static void usage(const char *argv0)
             "  t [opts] ARCHIVE [PAT...] test archive integrity\n"
             "  d [opts] ARCHIVE          dump raw archive headers\n"
             "  h, --help                 show this help\n",
-            argv0);
+            ACE_BANNER, argv0);
 }
 
 static const char *base_name(const char *p)

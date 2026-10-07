@@ -200,6 +200,7 @@ static int write_header(FILE *fp, const uint8_t *payload, uint16_t n)
 static void usage(const char *argv0)
 {
     fprintf(stderr,
+        "%s"
         "Usage: %s [-0|-z|-2|-s|-s8|-s16|-s32a|-s32b|-p W[:P]] [-xe|-dl] [-m 0-5] [-d KB]\n"
         "          [-pw PASS] [-cm TEXT] [-cf TEXT] [-V BYTES] [-A] [-k] [-x PAT] -o ARCHIVE FILE|@LIST...\n"
         "  -0       store uncompressed (default)\n"
@@ -225,7 +226,7 @@ static void usage(const char *argv0)
         "  -x PAT   exclude files matching PAT (-x@LIST for exclusion file)\n"
         "  @LIST    read files to archive from text file (one per line, @- for stdin)\n"
         "  FILE...  regular files, or directories stored recursively\n",
-        argv0);
+        ACE_BANNER, argv0);
 }
 
 /* Archive-wide parameters shared by every volume's main header. */

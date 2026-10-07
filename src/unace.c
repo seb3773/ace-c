@@ -11,6 +11,7 @@
 static void usage(const char *argv0)
 {
     fprintf(stderr,
+            "%s"
             "Usage: %s [-l|-t|-x|-H] [-d DIR] [-p PASS] [-s] [-j] [-k] [-1|--bare] [-u|--unix] ARCHIVE [PAT...]\n"
             "  -l  list archive contents (default)\n"
             "  -1, --bare  bare listing (one path per line, script/pipe friendly)\n"
@@ -26,7 +27,7 @@ static void usage(const char *argv0)
             "  --oem CP  decode member names from OEM code page 850 or 437\n"
             "  -v  verbose\n"
             "  PAT member name or wildcard pattern (case-insensitive)\n",
-            argv0);
+            ACE_BANNER, argv0);
 }
 
 static int member_matches(const char *pattern, const char *name)
