@@ -7,11 +7,6 @@ from the authentic closed-source legacy binaries (`ACE.EXE` PMODE/W 32-bit DOS,
 format conformance, identical canonical Huffman tree generation, and full
 bidirectional interoperability** with genuine WinACE archives.
 
-> **Status: complete, bit-exact, and validated.** Every capability is locked
-> by regression tests, achieving bit-exact payloads on authentic reference targets
-> and proven **in both directions** against the genuine WinACE 2.6 `ACE.EXE`
-> running under DOSBox (see [Cross-validation](#cross-validation-dosbox--authentic-winace-26)).
-
 ---
 
 ## Reverse-engineering approach and notable findings
@@ -24,8 +19,7 @@ details turned out to be counter-intuitive and are worth documenting (for an
 exhaustive technical specification, bitstream structures, and internal algorithms
 reverse-engineered from Marcel Lemke's binaries, see [FORMAT.md](FORMAT.md)):
 
-
-### Format surprises
+### Technical discoveries and format details
 
 - **CRC-32 without the final XOR.** ACE uses the reflected `0xEDB88320`
   polynomial with `0xFFFFFFFF` init but **does not complement the result**, so
@@ -84,51 +78,26 @@ reverse-engineered from Marcel Lemke's binaries, see [FORMAT.md](FORMAT.md)):
   in the creator's OEM code page; our decoder normalizes `\` → `/`, and
   cp850/cp437 name decoding is verified across character sets.
 
-### Deliberate deviations from the legacy behavior
+---
 
-- **DOS datetime clamping.** The DOS timestamp field carries a 7-bit year
-  offset (1980–2107, 2-second resolution, local time, no timezone). Rather
-  than emitting silently wrapped bits for out-of-range `mtime`s, the encoder
-  **clamps** to the nearest representable year; the decoder tolerates garbage
-  datetime fields from old/corrupt archives (falls back to a default display,
-  skips restoration) instead of failing — so reading ancient archives never
-  breaks.
-- **NT Security ACLs are out of scope** (a Windows/NTFS-only concept): the
-  record is recognized, surfaced by the header dump, and skipped on Linux.
-  Noted in `src/archive.c`.
-- **Authentic and Native SFX (Self-Extracting Archives).** The unified binary
-  embeds authentic 32-bit DOS PMODE/W, Win32 Console, and Win32 GUI stubs, as
-  well as a native 64-bit Linux ELF standalone extractor stub directly in the
-  executable. It can author new SFX executables (`ace a -sfx[=TYPE]`) or convert
-  existing archives (`ace s`), executing autonomously under DOSBox, Windows,
-  Wine, and modern Linux x86_64 distributions.
-- **Path Traversal & Zip-Slip Protection.** Both `ace` and the native Linux SFX
-  stub validate all extraction paths via `ace_is_safe_relpath()`:
-  - Continuously tracks directory nesting depth: any attempt to ascend above
-    the destination root via `../` (or `..\`) is intercepted and safely rejected
-    with a security warning (`Security warning: skipping unsafe path traversal`).
-  - Rejects leading absolute slashes (`/`, `\`) and DOS drive identifiers (`C:`).
-  - Automatically sanitizes and normalizes historical DOS backslashes
-    (`DIR\SUBDIR\FILE.TXT`) to forward slashes `/` on POSIX systems, ensuring
-    safe, seamless directory hierarchy recreation.
+## Security & Standalone SFX Architecture
 
-### Important steps
+### Path Traversal & Zip-Slip Protection
+Both `ace` and the standalone native Linux SFX stub strictly validate all extraction paths through `ace_is_safe_relpath()`:
+- **Depth tracking:** Continuously monitors directory nesting depth; any attempt to ascend above the destination root via `../` (or `..\`) is intercepted and safely skipped with a security warning (`Security warning: skipping unsafe path traversal`).
+- **Absolute & drive path rejection:** Rejects leading absolute slashes (`/`, `\`) and DOS drive identifiers (`C:`).
+- **DOS separator normalization:** Automatically normalizes historical DOS backslashes (`DIR\SUBDIR\FILE.TXT`) into forward slashes `/` on POSIX systems, ensuring safe, seamless directory hierarchy recreation.
 
-1. Header parser + CRC/bitstream/Huffman primitives, validated against
-   hand-crafted minimal archives (`tests/gen_store_ace.py`,
-   `tests/gen_multivol_ace.py`).
-2. LZ77 ACE 1.0 → blocked ACE 2.0 → adaptive tables → EXE/DELTA/SOUND/PIC
-   filters, each round-tripped through `ace`.
-3. Blowfish password support, solid archives, multi-volume encode/decode.
-4. Metadata fidelity: per-file DOS attributes + mtime from `stat()`, `-A`
-   path preservation, recursive directory archiving.
-5. OEM code pages, CLI extras (wildcards, `-j`, `-k`), datetime hardening.
-6. A single unified `ace` binary (mirroring legacy DOS `ACE.EXE`), then the
-   bidirectional DOSBox proof against the original `ACE.EXE` v2.6.
+### Autonomous Multi-Platform SFX Stubs
+The unified binary embeds authentic 32-bit DOS PMODE/W, Win32 Console, and Win32 GUI stubs, alongside a native 64-bit Linux ELF standalone extractor stub directly within the executable:
+- **Direct SFX creation:** `ace a -sfx[=TYPE]` creates standalone self-extracting executables.
+- **Archive conversion:** `ace s [opts] ARCHIVE [OUT]` converts existing archives to standalone SFX executables.
+- **Supported stub targets:** `dos` (32-bit DOS PMODE/W), `win32` (Win32 Console PE), `gui` (Win32 GUI PE), and `linux` (native 64-bit Linux ELF).
+- **Zero dependencies:** Self-extracting archives run autonomously under DOSBox, Windows, Wine, and modern Linux distributions without requiring external archive tools.
 
-A portability note: strict C11 with GCC 14 makes implicit declarations an
-error, so POSIX APIs need feature-test macros (`_DEFAULT_SOURCE`) up front —
-this is set at the top of the affected sources rather than via `-std=gnu11`.
+### Format Limits & Compatibility Handling
+- **DOS timestamp clamping:** The DOS timestamp field carries a 7-bit year offset (1980–2107, 2-second resolution, local time, no timezone). Rather than emitting silently wrapped bits for out-of-range filesystem timestamps, the encoder clamps to the nearest representable year. The decoder gracefully tolerates out-of-bounds datetime fields from corrupted legacy archives by falling back to safe defaults rather than failing extraction.
+- **Windows NT Security ACLs:** The Windows-specific NT ACL header record is recognized, surfaced in header dumps, and safely skipped during extraction on POSIX systems.
 
 ---
 
@@ -141,8 +110,12 @@ make clean
 ```
 
 Strict C11 (`gcc -std=c11 -Wall -Wextra -Wmissing-prototypes -O2 -g`).
-**No dependencies beyond libc/POSIX.** Python 3 is needed only for running
+**No dependencies beyond standard libc / POSIX.** Python 3 is needed only for running
 the regression test harness.
+
+> **Portability note:** Strict C11 with GCC 14 treats implicit declarations as
+> errors; POSIX APIs are enabled via explicit feature-test macros (`_DEFAULT_SOURCE`)
+> at the top of affected source files rather than via `-std=gnu11`.
 
 ---
 
@@ -152,7 +125,7 @@ The project builds a single unified **`ace`** binary (mirroring the classic DOS 
 
 ```text
 ace a ARCHIVE [opts] FILE...   create archive
-ace s [opts] ARCHIVE [OUT]     convert archive to SFX (.exe)
+ace s [opts] ARCHIVE [OUT]     convert archive to SFX (.exe / .sfx)
 ace x [opts] ARCHIVE [PAT...]  extract files with full pathnames
 ace e [opts] ARCHIVE [PAT...]  extract files without pathnames (junk paths)
 ace l [opts] ARCHIVE [PAT...]  list archive contents
@@ -250,19 +223,16 @@ Extraction & listing options:
   Win32 Console (`WIN32CL`), Win32 GUI (`WIN32GUI`), and native 64-bit Linux ELF (`LINUX`),
   fully autonomous under DOSBox, Windows, Wine, and modern Linux distributions.
 
-### Out of scope (by decision)
-- **NT Security ACLs** — Windows/NTFS-only; recognized, dumped, safely skipped on Linux.
-
-### Format-inherent limits (not fixable)
-- DOS `datetime`: **1980–2107**, **2-second** resolution, local time without
-  timezone; the encoder clamps out-of-range years into a valid header.
+### Out of scope / Format limits
+- **NT Security ACLs**: Windows/NTFS-specific records are recognized in headers and safely skipped on Linux.
+- **DOS timestamp limits**: 1980–2107 range clamped safely without bit wrap; resilient decoding of corrupted legacy dates.
 
 ---
 
 ## Cross-validation DOSBox ↔ authentic WinACE 2.6
 
-Bidirectional proof against the genuine `ACE.EXE` v2.6 (32-bit DOS), run
-2026-10-02.
+Bidirectional empirical validation against the genuine `ACE.EXE` v2.6 (32-bit DOS)
+executed under DOSBox.
 
 ### Our compressor → read by the real ACE
 All 8 archives produced by our Linux `ace a` were listed (`L`) **and integrity-tested
@@ -330,27 +300,27 @@ python3 tests/test_real_world.py
 ```text
 test_core                    units: CRC, bitstream, Huffman, LZ77, Blowfish
 roundtrip codecs             blocked · sound8/16/32a · pic · pic_left · lz77 · solid · enc
-mv.ace                       multi-volume fixture
-cli_extras                   wildcards, -j (junk), -k (mtime/attributes restore)
+mv.ace                       multi-volume fixture verification
+cli_extras                   wildcards, -j (junk paths), -k (mtime/attributes restore)
 oem                          cp850/cp437 member names (transcoding fidelity)
-mkace -V                     multi-volume encode == unace
-mkace -xe / -dl              forced EXE/DELTA modes == unace
-mkace attrs/mtime            DOS attributes + datetime == unace
-mkace -A                     full paths / LFN == unace
-mkace -2                     main + member comments == unace
-mkace recursive dir          tree + empty dir (unace extract == source tree)
-datetime bounds              encoder clamp 1980–2107 + decoder tolerance of corrupt fields
-ace unified CLI              a/x/l/t/d + mkace/unace multicall symlinks
-mkace -k locked              archive locking flag (FLAG_LOCKED) == unace
-mkace FILE64                 > 4 GiB 64-bit member encoding == unace
-mkace -x / @list             pattern exclusions & listfile input == unace
+multi-volume encode          multi-volume volume splitting and follow-on reassembly
+forced filter modes          forced EXE (-xe) and DELTA (-dl) encoding modes
+metadata preservation        DOS attributes and st_mtime roundtrip fidelity
+path preservation            full paths / LFN storage (-A) and reconstruction
+comments                     main (-cm) and member (-cf) inline comments
+recursive directory trees    tree archiving with empty directory entry preservation
+datetime bounds              encoder clamp 1980–2107 + resilient decoding of corrupt fields
+ace unified CLI              full command suite (a, x, e, l, v, t, d)
+archive locking              archive locking flag preservation (-k)
+FILE64 support               large 64-bit member encoding (> 4 GiB format)
+exclusions & listfiles       pattern exclusions (-x) and @listfile input
 sfx_stubs                    authentic DOS/Win32 & native Linux SFX creation + conversion
 path_traversal_security      rejection of ../, drive identifiers & backslash normalization
 bare_and_unix_listing        -1 bare and -u unix path formatting (CLI + Linux SFX)
-winace_corpus                9 authentic WinACE archives -> unace
+winace_corpus                9 authentic WinACE archives unpacked + bit-exact recompression
 ```
 
-`make test` is **fully green** (37 checks, 0 failures) and leaves no
+`make test` runs 37 automated checks with 0 failures and leaves no
 artefacts behind.
 
 ---
@@ -361,10 +331,10 @@ artefacts behind.
 include/ace/    archive · bitstream · blowfish · compress · crc · engine ·
                 huffman · lz77 · oem · pic · sound · util · cli
 src/            engine modules + ace.c (unified front-end) · mkace.c · unace.c
-tests/          test_core.c · test_roundtrip.py · winace_corpus.py ·
-                fixture generators (.py)
-tools/          gen_dosbox_verify.sh · check_dosbox_verify.sh · dosbox-ace.sh ·
-                wine-ace.sh
+tests/          test_core.c · test_roundtrip.py · test_real_world.py ·
+                winace_corpus.py · fixture generators (.py)
+tools/          gen_dosbox_verify.sh · check_dosbox_verify.sh · gen_sfx_stubs.py ·
+                dosbox-ace.sh · wine-ace.sh
 research/       original DOS & Win32 binaries
 testdata/       fixtures · winace/ (authentic corpus) · dosbox-verify/ (suite)
 ```
