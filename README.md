@@ -103,21 +103,51 @@ The unified binary embeds authentic 32-bit DOS PMODE/W, Win32 Console, and Win32
 
 ## Build
 
+The project is written in strict C11 with **zero external dependencies** beyond standard libc / POSIX / Win32. Binaries are organized into dedicated target directories:
+
+- **Linux x86_64:** `build/linux/ace` (with a convenience `./ace` symlink in the repository root).
+- **Windows x86_64:** `build/win64/ace.exe` (statically linked, standalone PE executable).
+
+### Prerequisites
+
+| Target | Toolchain / Dependency | Debian / Ubuntu | Fedora | Arch Linux |
+|---|---|---|---|---|
+| **Linux (native)** | GCC $\ge$ 4.9 or Clang, GNU Make | `build-essential` | `gcc make` | `base-devel` |
+| **Windows 64-bit** | MinGW-w64 (`x86_64-w64-mingw32-gcc`) | `mingw-w64` | `mingw64-gcc` | `mingw-w64-gcc` |
+| **Test Suites** | Python 3 (standard library only) | `python3` | `python3` | `python` |
+| **Wine Smoke Test** *(optional)* | Wine | `wine` | `wine` | `wine` |
+
+### Compilation Commands
+
 ```sh
-make            # builds build/linux/ace (and build/win64/ace.exe if mingw is available)
-make linux      # builds build/linux/ace and convenience root symlink ./ace
-make win64      # builds standalone static build/win64/ace.exe (via x86_64-w64-mingw32-gcc)
-make test       # full Linux regression suite (see below)
-make test-win64 # runtime test of win64 binary under Wine
-make clean
+# 1. Build all available targets (Linux + Win64 if MinGW is detected)
+make
+
+# 2. Build for Linux only
+make linux          # produces build/linux/ace and links ./ace
+
+# 3. Cross-compile for Windows 64-bit
+make win64          # produces build/win64/ace.exe
+
+# 4. Run test suites
+make test           # full 37-test Linux regression suite
+make test-win64     # automated functional test of ace.exe running under Wine
+python3 tests/test_real_world.py  # comprehensive corpus benchmark
+
+# 5. Clean all build outputs
+make clean          # removes build/, root symlinks, and temporary test artifacts
 ```
 
-Strict C11 (`gcc -std=c11 -Wall -Wextra -Wmissing-prototypes -O2 -g`).
-**Zero third-party dependencies.** Binaries are placed into dedicated target directories:
-- `build/linux/ace`: native Linux x86_64 executable (with root `./ace` symlink).
-- `build/win64/ace.exe`: fully autonomous, statically linked 64-bit Windows PE executable (imports only `KERNEL32.DLL` and `MSVCRT.DLL`, requiring no runtime GCC DLLs).
+### Windows 64-bit Binary Details
 
-> **Portability note:** Strict C11 with GCC 14 treats implicit declarations as
+The Windows executable (`build/win64/ace.exe`) is compiled with `-static`:
+- **Fully autonomous:** Statically links GCC runtime helpers, requiring **zero extra DLLs** (no `libgcc_s_seh-1.dll`, no `libwinpthread-1.dll`).
+- **System imports only:** Imports strictly `KERNEL32.DLL` and `MSVCRT.DLL` (standard Windows CRT).
+- **Portable:** Can be dropped as a single `.exe` onto any fresh 64-bit Windows installation (Windows 7 through 11, Windows Server) and runs out of the box.
+- **Native attribute support:** Uses native Win32 APIs (`GetFileAttributesA` / `SetFileAttributesA`) to preserve and restore all historical DOS/Windows attributes (`READONLY`, `HIDDEN`, `SYSTEM`, `ARCHIVE`).
+- **Contextual default SFX:** On Windows, `-sfx` automatically defaults to the authentic Win32 GUI PE stub (`WIN32GUI`), creating double-clickable extractors.
+
+> **Portability note:** Strict C11 mode with GCC 14 treats implicit declarations as
 > errors; POSIX APIs are enabled via explicit feature-test macros (`_DEFAULT_SOURCE`)
 > at the top of affected source files rather than via `-std=gnu11`.
 
