@@ -1,5 +1,6 @@
 # Build artifacts & executables
 build/
+dist/
 *.o
 *.pyc
 __pycache__/
