@@ -46,34 +46,66 @@ int ace_mkdir_p(const char *path)
     char tmp[4096];
     size_t len;
     size_t i;
+    ace_stat_t st;
 
     if (!path || !*path)
         return ACE_OK;
+    if (strcmp(path, ".") == 0 || strcmp(path, "..") == 0)
+        return ACE_OK;
+    if (ace_stat(path, &st) == 0 && S_ISDIR(st.st_mode))
+        return ACE_OK;
+
     len = strlen(path);
     if (len >= sizeof(tmp))
         return ACE_ERR_PARAM;
     memcpy(tmp, path, len + 1);
+
     for (i = 1; i < len; i++) {
         if (tmp[i] == '/' || tmp[i] == '\\') {
             char sep = tmp[i];
             tmp[i] = 0;
+            if (tmp[0] != 0 && strcmp(tmp, ".") != 0 && strcmp(tmp, "..") != 0
 #ifdef _WIN32
-            if (_mkdir(tmp) != 0 && errno != EEXIST)
-                return ACE_ERR_IO;
-#else
-            if (mkdir(tmp, 0755) != 0 && errno != EEXIST)
-                return ACE_ERR_IO;
+                && !(i == 2 && isalpha((unsigned char)tmp[0]) && tmp[1] == ':')
 #endif
+               ) {
+                if (ace_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode)) {
+#ifdef _WIN32
+                    if (_mkdir(tmp) != 0 && errno != EEXIST) {
+                        if (ace_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode))
+                            return ACE_ERR_IO;
+                    }
+#else
+                    if (mkdir(tmp, 0755) != 0 && errno != EEXIST) {
+                        if (ace_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode))
+                            return ACE_ERR_IO;
+                    }
+#endif
+                }
+            }
             tmp[i] = sep;
         }
     }
+
+    if (tmp[0] != 0 && strcmp(tmp, ".") != 0 && strcmp(tmp, "..") != 0
 #ifdef _WIN32
-    if (_mkdir(tmp) != 0 && errno != EEXIST)
-        return ACE_ERR_IO;
-#else
-    if (mkdir(tmp, 0755) != 0 && errno != EEXIST)
-        return ACE_ERR_IO;
+        && !(len == 2 && isalpha((unsigned char)tmp[0]) && tmp[1] == ':')
 #endif
+       ) {
+        if (ace_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode)) {
+#ifdef _WIN32
+            if (_mkdir(tmp) != 0 && errno != EEXIST) {
+                if (ace_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode))
+                    return ACE_ERR_IO;
+            }
+#else
+            if (mkdir(tmp, 0755) != 0 && errno != EEXIST) {
+                if (ace_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode))
+                    return ACE_ERR_IO;
+            }
+#endif
+        }
+    }
     return ACE_OK;
 }
 

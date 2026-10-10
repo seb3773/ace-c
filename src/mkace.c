@@ -203,9 +203,9 @@ static void usage(const char *argv0)
         "%s"
         "Usage: %s [-0|-z|-2|-s|-s8|-s16|-s32a|-s32b|-p W[:P]] [-xe|-dl] [-m 0-5] [-d KB]\n"
         "          [-pw PASS] [-cm TEXT] [-cf TEXT] [-V BYTES] [-A] [-k] [-x PAT] -o ARCHIVE FILE|@LIST...\n"
-        "  -0       store uncompressed (default)\n"
+        "  -0       store uncompressed\n"
         "  -z       LZ77 (ACE 1.0 method)\n"
-        "  -2       blocked ACE 2.0 (auto LZ77/EXE/DELTA/SOUND/PIC)\n"
+        "  -2       blocked ACE 2.0 (default, auto LZ77/EXE/DELTA/SOUND/PIC)\n"
         "  -s       solid (shared LZ77 dictionary)\n"
         "  -s8      blocked SOUND_8\n"
         "  -s16     blocked SOUND_16\n"
@@ -811,7 +811,7 @@ int mkace_main(int argc, char **argv)
 {
     const char *outpath = NULL;
     int i, first;
-    int method = 0;
+    int method = 2;
     unsigned force_mode = 0;
     int pic_width = 0;
     int pic_planes = 1;
@@ -978,6 +978,19 @@ int mkace_main(int argc, char **argv)
         if (olen > 4 && strcasecmp(outpath + olen - 4, ".ace") == 0) {
             snprintf(auto_sfx_out, sizeof(auto_sfx_out), "%.*s%s", (int)(olen - 4), outpath, ext);
             outpath = auto_sfx_out;
+        }
+    } else if (outpath) {
+        size_t olen = strlen(outpath);
+        const char *dot = strrchr(outpath, '.');
+        const char *slash1 = strrchr(outpath, '/');
+        const char *slash2 = strrchr(outpath, '\\');
+        const char *last_sep = (slash1 > slash2) ? slash1 : slash2;
+        /* If no extension after the last directory separator, append .ace */
+        if (!dot || (last_sep && dot < last_sep)) {
+            if (olen + 5 < sizeof(auto_sfx_out)) {
+                snprintf(auto_sfx_out, sizeof(auto_sfx_out), "%s.ace", outpath);
+                outpath = auto_sfx_out;
+            }
         }
     }
     if (!outpath || first >= argc) {

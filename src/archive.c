@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
@@ -12,6 +13,12 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#ifndef strcasecmp
+#define strcasecmp _stricmp
+#endif
+#ifndef strncasecmp
+#define strncasecmp _strnicmp
+#endif
 #endif
 
 static const char *host_names[] = {
@@ -561,6 +568,22 @@ int ace_archive_open(ace_archive_t *ar, const char *path, size_t search)
         return ACE_ERR_PARAM;
     snprintf(ar->path, sizeof(ar->path), "%s", path);
     ar->fp = fopen(path, "rb");
+    if (!ar->fp) {
+        /* Fallback: if opening raw path failed and path doesn't already end in .ace / .exe / .sfx, try path + ".ace" */
+        size_t plen = strlen(path);
+        if (plen + 5 < sizeof(ar->path) &&
+            (plen < 4 || (strcasecmp(path + plen - 4, ".ace") != 0 &&
+                          strcasecmp(path + plen - 4, ".exe") != 0 &&
+                          strcasecmp(path + plen - 4, ".sfx") != 0))) {
+            char alt[sizeof(ar->path)];
+            snprintf(alt, sizeof(alt), "%s.ace", path);
+            ar->fp = fopen(alt, "rb");
+            if (ar->fp) {
+                snprintf(ar->path, sizeof(ar->path), "%s", alt);
+                path = ar->path;
+            }
+        }
+    }
     if (!ar->fp)
         return ACE_ERR_IO;
     if (fseek(ar->fp, 0, SEEK_END) != 0) {
@@ -1089,13 +1112,18 @@ int ace_archive_extract_to_path(ace_archive_t *ar, size_t idx, const char *based
         name = unbuf;
     }
     if (opts->junk_paths) {
-        const char *slash = strrchr(name, '/');
+        const char *slash1 = strrchr(name, '/');
+        const char *slash2 = strrchr(name, '\\');
+        const char *slash = (slash1 > slash2) ? slash1 : slash2;
         if (slash)
             name = slash + 1;
     }
     if (!name[0] || strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
         return ACE_ERR_PARAM;
-    snprintf(path, sizeof(path), "%s/%s", basedir, name);
+    if (strcmp(basedir, ".") == 0)
+        snprintf(path, sizeof(path), "%s", name);
+    else
+        snprintf(path, sizeof(path), "%s/%s", basedir, name);
 
     if (m->hdr.attribs & ACE_ATTR_DIRECTORY) {
         rc = ace_mkdir_p(path);
@@ -1106,14 +1134,22 @@ int ace_archive_extract_to_path(ace_archive_t *ar, size_t idx, const char *based
 
     snprintf(parent, sizeof(parent), "%s", path);
     {
-        char *slash = strrchr(parent, '/');
+        char *slash1 = strrchr(parent, '/');
+        char *slash2 = strrchr(parent, '\\');
+        char *slash = (slash1 > slash2) ? slash1 : slash2;
         if (slash && slash != parent) {
             *slash = 0;
-            rc = ace_mkdir_p(parent);
-            if (rc != ACE_OK)
-                return rc;
+            if (parent[0] != '\0' && strcmp(parent, ".") != 0 && strcmp(parent, "..") != 0) {
+                rc = ace_mkdir_p(parent);
+                if (rc != ACE_OK)
+                    return rc;
+            }
         }
     }
+#ifdef _WIN32
+    /* If target file already exists and is marked read-only, reset attributes so fopen("wb") can overwrite */
+    SetFileAttributesA(path, FILE_ATTRIBUTE_NORMAL);
+#endif
     fo.out = fopen(path, "wb");
     if (!fo.out)
         return ACE_ERR_IO;

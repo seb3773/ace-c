@@ -27,7 +27,7 @@ static void usage(const char *argv0)
             "Usage: %s COMMAND [OPTIONS] ARCHIVE [FILES... / PATTERNS...]\n\n"
             "Commands:\n"
             "  a ARCHIVE [opts] FILE...  create archive\n"
-            "                            options: -0 (store), -z (lz77), -2 (blocked 2.0),\n"
+            "                            options: -0 (store), -z (lz77), -2 (blocked 2.0, default),\n"
             "                                     -s (solid), -m 0..5 (quality), -d KB (dic),\n"
             "                                     -s8/-s16/-s32a/-s32b (sound), -xe (exe),\n"
             "                                     -dl (delta), -p W[:P] (pic),\n"
@@ -51,7 +51,9 @@ static void usage(const char *argv0)
 
 static const char *base_name(const char *p)
 {
-    const char *s = strrchr(p, '/');
+    const char *s1 = strrchr(p, '/');
+    const char *s2 = strrchr(p, '\\');
+    const char *s = (s1 > s2) ? s1 : s2;
     return s ? s + 1 : p;
 }
 
