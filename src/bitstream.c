@@ -242,13 +242,18 @@ static int bsw_grow(ace_bsw_t *w, size_t extra)
 
 static int bsw_emit32(ace_bsw_t *w, uint32_t word)
 {
-    int rc = bsw_grow(w, 4);
-    if (rc != ACE_OK)
-        return rc;
-    w->data[w->len++] = (uint8_t)word;
-    w->data[w->len++] = (uint8_t)(word >> 8);
-    w->data[w->len++] = (uint8_t)(word >> 16);
-    w->data[w->len++] = (uint8_t)(word >> 24);
+    size_t len = w->len;
+    if (len + 4 > w->cap) {
+        int rc = bsw_grow(w, 4);
+        if (rc != ACE_OK)
+            return rc;
+        len = w->len;
+    }
+    w->data[len] = (uint8_t)word;
+    w->data[len + 1] = (uint8_t)(word >> 8);
+    w->data[len + 2] = (uint8_t)(word >> 16);
+    w->data[len + 3] = (uint8_t)(word >> 24);
+    w->len = len + 4;
     return ACE_OK;
 }
 

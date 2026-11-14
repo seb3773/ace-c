@@ -66,12 +66,16 @@ static inline uint32_t ace_rot32(uint32_t i, int n)
 
 static inline int ace_bit_length(unsigned int x)
 {
+#if defined(__GNUC__)
+    return x ? (int)(sizeof(unsigned int) * 8 - (unsigned)__builtin_clz(x)) : 0;
+#else
     int n = 0;
     while (x) {
         n++;
         x >>= 1;
     }
     return n;
+#endif
 }
 
 int ace_mkdir_p(const char *path);

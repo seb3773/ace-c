@@ -76,27 +76,37 @@ static void ace_huff_quicksort(uint8_t *keys, uint16_t *values, int n)
 }
 
 static int ace_huff_make_tree(const uint8_t *widths_in, unsigned nwidths,
-                              unsigned max_width, ace_huff_t *out)
+                              unsigned max_width, ace_huff_t *out, int want_decode)
 {
+    uint8_t sw_stack[512];
+    uint16_t ss_stack[512];
     uint8_t *sorted_widths;
     uint16_t *sorted_symbols;
     unsigned i;
     unsigned used;
-    unsigned max_codes;
     unsigned pos;
     uint8_t *widths;
+    int heap_sort = 0;
 
     memset(out, 0, sizeof(*out));
     if (nwidths == 0)
         return ACE_ERR_PARAM;
     widths = (uint8_t *)malloc(nwidths);
-    sorted_widths = (uint8_t *)malloc(nwidths);
-    sorted_symbols = (uint16_t *)malloc(nwidths * sizeof(uint16_t));
-    if (!widths || !sorted_widths || !sorted_symbols) {
-        free(widths);
-        free(sorted_widths);
-        free(sorted_symbols);
+    if (!widths)
         return ACE_ERR_NOMEM;
+    if (nwidths <= 512) {
+        sorted_widths = sw_stack;
+        sorted_symbols = ss_stack;
+    } else {
+        sorted_widths = (uint8_t *)malloc(nwidths);
+        sorted_symbols = (uint16_t *)malloc(nwidths * sizeof(uint16_t));
+        heap_sort = 1;
+        if (!sorted_widths || !sorted_symbols) {
+            free(widths);
+            free(sorted_widths);
+            free(sorted_symbols);
+            return ACE_ERR_NOMEM;
+        }
     }
     memcpy(widths, widths_in, nwidths);
     memcpy(sorted_widths, widths_in, nwidths);
@@ -122,45 +132,56 @@ static int ace_huff_make_tree(const uint8_t *widths_in, unsigned nwidths,
             used = 1;
     }
 
-    max_codes = 1u << max_width;
-    out->codes = (uint16_t *)malloc(max_codes * sizeof(uint16_t));
-    if (!out->codes) {
-        free(widths);
-        free(sorted_widths);
-        free(sorted_symbols);
-        return ACE_ERR_NOMEM;
-    }
-    pos = 0;
-    for (i = used; i-- > 0;) {
-        uint16_t sym = sorted_symbols[i];
-        uint8_t wdt = sorted_widths[i];
-        unsigned repeat;
-        unsigned k;
+    if (want_decode) {
+        unsigned max_codes = 1u << max_width;
+        out->codes = (uint16_t *)malloc(max_codes * sizeof(uint16_t));
+        if (!out->codes) {
+            free(widths);
+            if (heap_sort) {
+                free(sorted_widths);
+                free(sorted_symbols);
+            }
+            return ACE_ERR_NOMEM;
+        }
+        pos = 0;
+        for (i = used; i-- > 0;) {
+            uint16_t sym = sorted_symbols[i];
+            uint8_t wdt = sorted_widths[i];
+            unsigned repeat;
+            unsigned k;
 
-        if (wdt > max_width) {
-            free(widths);
-            free(sorted_widths);
-            free(sorted_symbols);
-            ace_huff_free(out);
-            return ACE_ERR_CORRUPT;
+            if (wdt > max_width) {
+                if (heap_sort) {
+                    free(sorted_widths);
+                    free(sorted_symbols);
+                }
+                free(widths);
+                ace_huff_free(out);
+                return ACE_ERR_CORRUPT;
+            }
+            repeat = 1u << (max_width - wdt);
+            if (pos + repeat > max_codes) {
+                if (heap_sort) {
+                    free(sorted_widths);
+                    free(sorted_symbols);
+                }
+                free(widths);
+                ace_huff_free(out);
+                return ACE_ERR_CORRUPT;
+            }
+            for (k = 0; k < repeat; k++)
+                out->codes[pos++] = sym;
         }
-        repeat = 1u << (max_width - wdt);
-        if (pos + repeat > max_codes) {
-            free(widths);
-            free(sorted_widths);
-            free(sorted_symbols);
-            ace_huff_free(out);
-            return ACE_ERR_CORRUPT;
-        }
-        for (k = 0; k < repeat; k++)
-            out->codes[pos++] = sym;
+        out->ncodes = pos;
     }
-    out->ncodes = pos;
+
     out->enc_codes = (uint16_t *)calloc(nwidths, sizeof(uint16_t));
     if (!out->enc_codes) {
+        if (heap_sort) {
+            free(sorted_widths);
+            free(sorted_symbols);
+        }
         free(widths);
-        free(sorted_widths);
-        free(sorted_symbols);
         ace_huff_free(out);
         return ACE_ERR_NOMEM;
     }
@@ -178,8 +199,10 @@ static int ace_huff_make_tree(const uint8_t *widths_in, unsigned nwidths,
     out->widths = widths;
     out->nwidths = nwidths;
     out->max_width = max_width;
-    free(sorted_widths);
-    free(sorted_symbols);
+    if (heap_sort) {
+        free(sorted_widths);
+        free(sorted_symbols);
+    }
     return ACE_OK;
 }
 
@@ -214,7 +237,7 @@ int ace_huff_read_tree(ace_bs_t *bs, unsigned max_width, unsigned num_codes, ace
             return ACE_ERR_EOF;
         width_widths[i] = (uint8_t)w;
     }
-    rc = ace_huff_make_tree(width_widths, upper_width + 1, ACE_HUFF_MAXWIDTHWIDTH, &width_tree);
+    rc = ace_huff_make_tree(width_widths, upper_width + 1, ACE_HUFF_MAXWIDTHWIDTH, &width_tree, 1);
     if (rc != ACE_OK)
         return rc;
 
@@ -260,7 +283,7 @@ int ace_huff_read_tree(ace_bs_t *bs, unsigned max_width, unsigned num_codes, ace
             widths[i] = (uint8_t)(widths[i] + lower_width);
     }
 
-    rc = ace_huff_make_tree(widths, num_widths, max_width, out);
+    rc = ace_huff_make_tree(widths, num_widths, max_width, out, 1);
     free(widths);
     return rc;
 }
@@ -288,7 +311,7 @@ int ace_huff_read_symbol(const ace_huff_t *t, ace_bs_t *bs, unsigned *sym)
 
 int ace_huff_from_widths(const uint8_t *widths, unsigned nwidths, unsigned max_width, ace_huff_t *out)
 {
-    return ace_huff_make_tree(widths, nwidths, max_width, out);
+    return ace_huff_make_tree(widths, nwidths, max_width, out, 1);
 }
 
 typedef struct {
@@ -398,23 +421,33 @@ static void quicksort_subrange_u32(uint32_t *keys, uint16_t *values, int left, i
 
 static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned max_width)
 {
-    ace_hn_t *node;
-    uint32_t *sorted_freq;
-    uint16_t *sorted_sym;
-    int *active;
-    unsigned i, used = 0, nnodes, next, alive;
-    unsigned leaves;
+    ace_hn_t *node = NULL;
+    uint32_t *sorted_freq = NULL;
+    uint16_t *sorted_sym = NULL;
+    int *active = NULL;
+    uint32_t sf_stack[512];
+    uint16_t ss_stack[512];
+    ace_hn_t node_stack[1023];
+    int active_stack[512];
+    int heap_sort = 0, heap_tree = 0;
+    unsigned i, used = 0, nnodes, next, alive, leaves;
 
     memset(len, 0, n);
     if (n == 0)
         return ACE_ERR_PARAM;
 
-    sorted_freq = (uint32_t *)malloc(n * sizeof(uint32_t));
-    sorted_sym = (uint16_t *)malloc(n * sizeof(uint16_t));
-    if (!sorted_freq || !sorted_sym) {
-        free(sorted_freq);
-        free(sorted_sym);
-        return ACE_ERR_NOMEM;
+    if (n <= 512) {
+        sorted_freq = sf_stack;
+        sorted_sym = ss_stack;
+    } else {
+        sorted_freq = (uint32_t *)malloc(n * sizeof(uint32_t));
+        sorted_sym = (uint16_t *)malloc(n * sizeof(uint16_t));
+        heap_sort = 1;
+        if (!sorted_freq || !sorted_sym) {
+            free(sorted_freq);
+            free(sorted_sym);
+            return ACE_ERR_NOMEM;
+        }
     }
     memcpy(sorted_freq, freq, n * sizeof(uint32_t));
     for (i = 0; i < n; i++)
@@ -430,8 +463,10 @@ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned
         len[0] = 1;
         if (n > 1)
             len[1] = 1;
-        free(sorted_freq);
-        free(sorted_sym);
+        if (heap_sort) {
+            free(sorted_freq);
+            free(sorted_sym);
+        }
         return ACE_OK;
     }
     if (used == 1) {
@@ -439,21 +474,31 @@ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned
         len[sorted_sym[0]] = 1;
         if (n > 1)
             len[other] = 1;
-        free(sorted_freq);
-        free(sorted_sym);
+        if (heap_sort) {
+            free(sorted_freq);
+            free(sorted_sym);
+        }
         return ACE_OK;
     }
 
     leaves = used;
     nnodes = 2 * leaves - 1;
-    node = (ace_hn_t *)malloc(nnodes * sizeof(*node));
-    active = (int *)malloc(leaves * sizeof(int));
-    if (!node || !active) {
-        free(sorted_freq);
-        free(sorted_sym);
-        free(node);
-        free(active);
-        return ACE_ERR_NOMEM;
+    if (n <= 512 && nnodes <= 1023) {
+        node = node_stack;
+        active = active_stack;
+    } else {
+        node = (ace_hn_t *)malloc(nnodes * sizeof(*node));
+        active = (int *)malloc(leaves * sizeof(int));
+        heap_tree = 1;
+        if (!node || !active) {
+            if (heap_sort) {
+                free(sorted_freq);
+                free(sorted_sym);
+            }
+            free(node);
+            free(active);
+            return ACE_ERR_NOMEM;
+        }
     }
 
     for (i = 0; i < leaves; i++) {
@@ -506,34 +551,47 @@ static int huff_lengths(const uint32_t *freq, unsigned n, uint8_t *len, unsigned
         len[sorted_sym[i]] = (uint8_t)d;
     }
 
-    free(node);
-    free(active);
-    free(sorted_freq);
-    free(sorted_sym);
+    if (heap_tree) {
+        free(node);
+        free(active);
+    }
+    if (heap_sort) {
+        free(sorted_freq);
+        free(sorted_sym);
+    }
     huff_limit_widths(len, n, max_width);
     return ACE_OK;
 }
 
 int ace_huff_from_freq(const uint32_t *freq, unsigned n, unsigned max_width, ace_huff_t *out)
 {
+    uint8_t widths_stack[512];
     uint8_t *widths;
     unsigned last = 0, i;
     int rc;
+    int heap = (n > 512);
 
-    widths = (uint8_t *)calloc(n, 1);
-    if (!widths)
-        return ACE_ERR_NOMEM;
+    if (heap) {
+        widths = (uint8_t *)calloc(n, 1);
+        if (!widths)
+            return ACE_ERR_NOMEM;
+    } else {
+        widths = widths_stack;
+        memset(widths, 0, n);
+    }
     rc = huff_lengths(freq, n, widths, max_width);
     if (rc != ACE_OK) {
-        free(widths);
+        if (heap)
+            free(widths);
         return rc;
     }
     for (i = 0; i < n; i++) {
         if (widths[i])
             last = i;
     }
-    rc = ace_huff_make_tree(widths, last + 1, max_width, out);
-    free(widths);
+    rc = ace_huff_make_tree(widths, last + 1, max_width, out, 0);
+    if (heap)
+        free(widths);
     return rc;
 }
 
@@ -549,8 +607,8 @@ int ace_huff_write_symbol(ace_bsw_t *w, const ace_huff_t *t, unsigned sym)
 int ace_huff_write_tree(ace_bsw_t *w, const ace_huff_t *t)
 {
     unsigned n, i, lower = 0, upper, maxw = 0, minw = 16;
-    uint8_t *raw;
-    uint32_t *wfreq;
+    uint8_t raw[512];
+    uint32_t wfreq[16];
     ace_huff_t wt;
     int rc;
 
@@ -577,13 +635,7 @@ int ace_huff_write_tree(ace_bsw_t *w, const ace_huff_t *t)
     if (upper > 15)
         upper = 15;
 
-    raw = (uint8_t *)malloc(n);
-    wfreq = (uint32_t *)calloc(upper + 1, sizeof(uint32_t));
-    if (!raw || !wfreq) {
-        free(raw);
-        free(wfreq);
-        return ACE_ERR_NOMEM;
-    }
+    memset(wfreq, 0, (upper + 1) * sizeof(uint32_t));
     raw[0] = t->widths[0] ? (uint8_t)(t->widths[0] - lower) : 0;
     for (i = 1; i < n; i++) {
         unsigned cur = t->widths[i] ? (t->widths[i] - lower) : 0;
@@ -623,13 +675,10 @@ int ace_huff_write_tree(ace_bsw_t *w, const ace_huff_t *t)
         memset(ww_buf, 0, sizeof(ww_buf));
         rc = huff_lengths(wfreq, upper + 1, ww_buf, ACE_HUFF_MAXWIDTHWIDTH);
         if (rc == ACE_OK)
-            rc = ace_huff_make_tree(ww_buf, upper + 1, ACE_HUFF_MAXWIDTHWIDTH, &wt);
+            rc = ace_huff_make_tree(ww_buf, upper + 1, ACE_HUFF_MAXWIDTHWIDTH, &wt, 0);
     }
-    if (rc != ACE_OK) {
-        free(raw);
-        free(wfreq);
+    if (rc != ACE_OK)
         return rc;
-    }
 
     rc = ace_bsw_write_bits(w, n - 1, 9);
     if (rc == ACE_OK)
@@ -672,7 +721,5 @@ int ace_huff_write_tree(ace_bsw_t *w, const ace_huff_t *t)
     }
 
     ace_huff_free(&wt);
-    free(raw);
-    free(wfreq);
     return rc;
 }
